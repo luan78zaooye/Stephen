@@ -3,6 +3,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType
 
 
+
 def run_transform(bucket_name):
 	# Create a spark session
 	spark = SparkSession.builder.appName('emr etl job').getOrCreate()
