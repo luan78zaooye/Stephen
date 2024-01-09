@@ -7,6 +7,9 @@ role_name = 'Jenkins-Role'
 sts = boto3.client('sts')
 stsresponse = sts.assume_role(RoleArn=role_arn, RoleSessionName=role_name)
 
+os.environ['AWS_ACCESS_KEY_ID'] = stsresponse['Credentials']['AccessKeyId']
+os.environ['AWS_SECRET_ACCESS_KEY'] = stsresponse['Credentials']['SecretAccessKey']
+os.environ['AWS_SECURITY_TOKEN'] = stsresponse['Credentials']['SessionToken']
 
 creds = {}
 creds['AWS_ACCESS_KEY_ID'] = srsresponse['Credentials']['AccessKeyId']
@@ -15,10 +18,6 @@ creds['AWS_SECURITY_TOKEN'] = srsresponse['Credentials']['SessionToken']
 
 botosession = boto3.session.Session(**creds)
 client_redshift_serverless = botosession.client('redshift-serverless', region_name = 'us-west-2')
-
-
-botosession = boto3.session.Session(aws_access_key_id='AKIATVBHMOFORNJUCXPP')
-
 client_secret_manager = botosession.client('secretsmanager', region_name = 'us-west-2')
 
 # create secret
