@@ -1,7 +1,7 @@
 import boto3
 
 # get temporary secury credential
-"""
+
 role_arn = 'arn:aws:iam::251338191197:role/Jenkins-Role'
 role_name = 'Jenkins-Role'
 sts = boto3.client('sts')
@@ -14,7 +14,7 @@ creds['AWS_SECRET_ACCESS_KEY'] = 'dsadaefad43da'
 creds['AWS_SECURITY_TOKEN'] = 'dadwaacsc34faef'
 """
 
-botosession = boto3.session.Session(aws_access_key_id='AKIATVBHMOFORNJUCXPP',aws_secret_access_key='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')
+botosession = boto3.session.Session(aws_access_key_id='AKIATVBHMOFORNJUCXPP')
 
 client_secret_manager = botosession.client('secretsmanager', region_name = 'us-west-2')
 
