@@ -22,7 +22,6 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a python script
         run: |
-          pip install os
           pip install boto3
           cd Jenkins/
           python create_redshift_serverless.py
