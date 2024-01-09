@@ -21,6 +21,6 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a python script
-      run: |
-        cd Jenkins/
-        python create_redshift_serverless.py
+        run: |
+          cd Jenkins/
+          python create_redshift_serverless.py
