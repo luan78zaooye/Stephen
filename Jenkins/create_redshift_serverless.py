@@ -1,5 +1,4 @@
 import boto3
-import os
 
 # get temporary secury credential
 role_arn = 'arn:aws:iam::251338191197:role/Jenkins-Role'
