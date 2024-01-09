@@ -36,7 +36,7 @@ client_redshift_serverless.create_namespace(
         {
             'key': 'Type',
             'value': 'db'
-        },
+        }
     ]
 )
 
