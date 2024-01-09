@@ -14,8 +14,8 @@ creds['AWS_SECRET_ACCESS_KEY'] = 'dsadaefad43da'
 creds['AWS_SECURITY_TOKEN'] = 'dadwaacsc34faef'
 """
 
-botosession = boto3.session.Session(aws_access_key_id='AKIATVBHMOFO72ZLH6FA')
-'''
+botosession = boto3.session.Session(aws_access_key_id='AKIATVBHMOFORNJUCXPP',aws_secret_access_key='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')
+
 client_secret_manager = botosession.client('secretsmanager', region_name = 'us-west-2')
 
 # create secret
@@ -26,7 +26,7 @@ client_secret_manager.create_secret(
     SecretString='qCHotS9MdXdJAor',
     ForceOverwriteReplicaSecret=False
 )
-'''
+
 client_redshift_serverless = botosession.client('redshift-serverless', region_name = 'us-west-2')
 
 # create namespace
