@@ -1,7 +1,7 @@
 import boto3
+import os
 
 # get temporary secury credential
-
 role_arn = 'arn:aws:iam::251338191197:role/Jenkins-Role'
 role_name = 'Jenkins-Role'
 sts = boto3.client('sts')
@@ -9,10 +9,13 @@ stsresponse = sts.assume_role(RoleArn=role_arn, RoleSessionName=role_name)
 
 
 creds = {}
-creds['AWS_ACCESS_KEY_ID'] = 'AKIATVBHMOFO72ZLH6FA'
-creds['AWS_SECRET_ACCESS_KEY'] = 'dsadaefad43da'
-creds['AWS_SECURITY_TOKEN'] = 'dadwaacsc34faef'
-"""
+creds['AWS_ACCESS_KEY_ID'] = srsresponse['Credentials']['AccessKeyId']
+creds['AWS_SECRET_ACCESS_KEY'] = srsresponse['Credentials']['SecretAccessKey']
+creds['AWS_SECURITY_TOKEN'] = srsresponse['Credentials']['SessionToken']
+
+botosession = boto3.session.Session(**creds)
+client_redshift_serverless = botosession.client('redshift-serverless', region_name = 'us-west-2')
+
 
 botosession = boto3.session.Session(aws_access_key_id='AKIATVBHMOFORNJUCXPP')
 
