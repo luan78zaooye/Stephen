@@ -9,7 +9,7 @@ stsresponse = sts.assume_role(RoleArn=role_arn, RoleSessionName=role_name)
 """
 
 creds = {}
-creds['AWS_ACCESS_KEY_ID'] = 'sdaddafdwdacs2c'
+creds['AWS_ACCESS_KEY_ID'] = 'AKIATVBHMOFO72ZLH6FA'
 creds['AWS_SECRET_ACCESS_KEY'] = 'dsadaefad43da'
 creds['AWS_SECURITY_TOKEN'] = 'dadwaacsc34faef'
 
