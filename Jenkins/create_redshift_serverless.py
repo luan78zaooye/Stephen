@@ -28,7 +28,7 @@ client_redshift_serverless.create_namespace(
     ],
     kmsKeyId='5dd84b8a-4989-4f2f-99fb-073e9499b6a9',
     logExports=[
-        'useractivitylog'|'userlog'|'connectionlog',
+        'useractivitylog'
     ],
     manageAdminPassword=False,
     namespaceName='namespace',
