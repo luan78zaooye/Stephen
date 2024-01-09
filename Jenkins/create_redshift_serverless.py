@@ -4,7 +4,7 @@ import boto3
 role_arn = 'arn:aws:iam::251338191197:role/Jenkins-Role'
 role_name = 'Jenkins-Role'
 sts = boto3.client('sts')
-stsresponse = sts.assume_role(RoleArn=role_ran, RoleSessionName=role_name)
+stsresponse = sts.assume_role(RoleArn=role_arn, RoleSessionName=role_name)
 
 creds = {}
 creds['AWS_ACCESS_KEY_ID'] = srsresponse['Credentials']['AccessKeyId']
