@@ -15,6 +15,18 @@ creds['AWS_SECURITY_TOKEN'] = 'dadwaacsc34faef'
 """
 
 botosession = boto3.session.Session(aws_access_key_id='AKIATVBHMOFO72ZLH6FA')
+
+client_secret_manager = botosession.client('secretsmanager', region_name = 'us-west-2')
+
+# create secret
+client_secret_manager.create_secret(
+    Name='rdsls',
+    ClientRequestToken='a97e745a-0e2e-4d7a-a420-f8ccf580ecf4',
+    Description='create secret',
+    SecretString='qCHotS9MdXdJAor',
+    ForceOverwriteReplicaSecret=False
+)
+
 client_redshift_serverless = botosession.client('redshift-serverless', region_name = 'us-west-2')
 
 # create namespace
