@@ -16,7 +16,7 @@ now_str = now.strftime("%Y%m%d%H%M%S")
 def set_boto_session(accountId=None, roleName=None):
     creds = {}
     if accountId and roleName:
-        role_arn = f"arn:aws:iam::{accountId}:role/{roleName}"
+        role_arn = "arn:aws:iam::" + accountId + ":role/" + roleName
         sts_client = boto3.client('sts')
         stsResponse = sts_client.assume_role(RoleArn=role_arn, RoleSessionName=roleName)
         creds['aws_access_key_id'] = stsResponse['Credentials']['AccessKeyId']
