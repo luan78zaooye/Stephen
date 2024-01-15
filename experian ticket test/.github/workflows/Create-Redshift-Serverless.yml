@@ -1,4 +1,4 @@
-name: Create Redshift Serverless
+name: Create-Redshift-Serverless
 
 on:
   workflow_dispatch:
