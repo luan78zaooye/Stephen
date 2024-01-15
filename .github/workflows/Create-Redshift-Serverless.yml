@@ -1,0 +1,27 @@
+name: Create Redshift Serverless
+
+on:
+  workflow_dispatch:
+
+jobs:
+  manage-redshift:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: pip install boto3
+
+    - name: Execute Python script
+      env:
+        AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+        AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      run: |
+        chmod +x scripts/create_redshift_serverless.py
+        scripts/create_redshift_serverless.py
