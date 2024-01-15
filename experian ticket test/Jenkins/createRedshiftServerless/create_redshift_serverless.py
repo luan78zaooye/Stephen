@@ -2,7 +2,6 @@
 import boto3
 import os
 import time
-
 from datetime import datetime
 
 now = datetime.now()
