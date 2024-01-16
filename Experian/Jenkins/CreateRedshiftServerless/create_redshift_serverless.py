@@ -9,8 +9,8 @@ now_str = now.strftime("%Y%m%d%H%M%S")
 
 
 # key for test
-os.environ['AWS_ACCESS_KEY_ID']="xxx"
-os.environ['AWS_SECRET_ACCESS_KEY']="xxx"
+# os.environ['AWS_ACCESS_KEY_ID']="xxx"
+# os.environ['AWS_SECRET_ACCESS_KEY']="xxx"
 
 # login
 def set_boto_session(accountId=None, roleName=None):
