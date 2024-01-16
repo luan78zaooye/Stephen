@@ -90,4 +90,4 @@ if __name__ == "__main__":
     print("#" * 20, "loadToSecretManager", "#" * 20)
     loadToSecretManager(awscreds)
     print("#" * 20, "createNamespaceWorkgroup", "#" * 20)
-    namespaceID, namespaceName, workgroupName = createNamespaceWorkgroup(session, accountId, roleName)
+    namespaceID, namespaceName, workgroupName = createNamespaceWorkgroup(session, "251338191197", "redshift_serverless_automation")
