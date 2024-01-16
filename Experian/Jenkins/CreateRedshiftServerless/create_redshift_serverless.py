@@ -7,7 +7,7 @@ from datetime import datetime
 from pytz import timezone
 
 now = datetime.now(timezone('US/Pacific'))
-now_str = now.strftime("%Y%m%d")
+now_str = now.strftime("%Y%m%d_%H")
 
 
 # key for test
@@ -42,13 +42,13 @@ def getAdminPassword():
     # replace 1 or 2 characters with a number for the front half:
     for i in range(random.randrange(1, 3)):
         replace_index = random.randrange(len(admin_pw) // 2)
-        admin_pw = admin_pw[:replace_index] + \
+        admin_pw = admin_pw[:replace_index] + 
                str(random.randrange(10)) + admin_pw[replace_index + 1:]
 
     # replace 1 or 2 characters with a uppercase letter for the back half:
     for i in range(random.randrange(1, 3)):
         replace_index = random.randrange(len(admin_pw) // 2, len(admin_pw))
-        admin_pw = admin_pw[:replace_index] + \
+        admin_pw = admin_pw[:replace_index] + 
                admin_pw[replace_index].upper() + admin_pw[replace_index + 1:]
         
     return admin_pw
@@ -184,6 +184,6 @@ if __name__ == "__main__":
     print("#" * 20, "set_boto_session", "#" * 20)
     session, awscreds = set_boto_session("251338191197", "redshift_serverless_automation")
     print("#" * 20, "createNamespaceWorkgroup", "#" * 20)
-    namespaceID, namespaceName, workgroupName = \
+    namespaceID, namespaceName, workgroupName = 
          createNamespaceWorkgroup(session, "251338191197", "redshift_serverless_automation")
     
