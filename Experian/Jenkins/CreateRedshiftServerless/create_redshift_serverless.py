@@ -9,8 +9,8 @@ now_str = now.strftime("%Y%m%d%H%M%S")
 
 
 # key for test
-# os.environ['AWS_ACCESS_KEY_ID']="xxx"
-# os.environ['AWS_SECRET_ACCESS_KEY']="xxx"
+os.environ['AWS_ACCESS_KEY_ID']="xxx"
+os.environ['AWS_SECRET_ACCESS_KEY']="xxx"
 
 # login
 def set_boto_session(accountId=None, roleName=None):
@@ -24,7 +24,7 @@ def set_boto_session(accountId=None, roleName=None):
         creds['aws_session_token'] = stsResponse['Credentials']['SessionToken']
     else:
         print("invalid `accountId` or `roleName`!")
-    botosession = boto3.Session(**creds)
+    botosession = boto3.session.Session(**creds)
     return botosession, creds
 
 
@@ -50,7 +50,39 @@ def createNamespaceWorkgroup(session, accountId, roleName):
         iamRoles=[
             f"arn:aws:iam::{accountId}:role/{roleName}"
         ],
-        kmsKeyId='c3bc717c-287b-46b4-8721-e26b3c4f2431'
+        kmsKeyId='c3bc717c-287b-46b4-8721-e26b3c4f2431',
+        logExports=['useractivitylog','userlog','connectionlog'],
+        tags=[
+            {
+                'key': 'Type',
+                'value': 'db'
+            },
+            {
+                'key': 'Platform',
+                'value': 'dataservices'
+            },
+            {
+                'key': 'Environment',
+                'value': 'prod'
+            },
+            {
+                'key': 'Service',
+                'value': 'redshiftserverless'
+            },
+            {
+                'key': 'productLine',
+                'value': 'd2c'
+            },
+            {
+                'key': 'Name',
+                'value': 'prod-us-db-redshiftserverless'
+            },
+            {
+                'key': 'ServiceOwner',
+                'value': 'dbteam'
+            }
+        ]
+        
     )
 
     while True:
@@ -73,7 +105,37 @@ def createNamespaceWorkgroup(session, accountId, roleName):
         subnetIds=["subnet-0ccf709939a778510", "subnet-016aea78f570cdb45", "subnet-0e7705781de7962e4",
                    "subnet-079ee92704b5f0a17"],
         namespaceName=namespaceName,
-        workgroupName=workgroupName
+        workgroupName=workgroupName,
+        tags=[
+            {
+                'key': 'Type',
+                'value': 'db'
+            },
+            {
+                'key': 'Platform',
+                'value': 'dataservices'
+            },
+            {
+                'key': 'Environment',
+                'value': 'prod'
+            },
+            {
+                'key': 'Service',
+                'value': 'redshiftserverless'
+            },
+            {
+                'key': 'productLine',
+                'value': 'd2c'
+            },
+            {
+                'key': 'Name',
+                'value': 'prod-us-db-redshiftserverless'
+            },
+            {
+                'key': 'ServiceOwner',
+                'value': 'dbteam'
+            }
+        ]
     )
 
     while True:
