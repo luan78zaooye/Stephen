@@ -161,12 +161,12 @@ def createNamespaceWorkgroup(session, accountId, roleName):
         time.sleep(10)
         if response['workgroup']['status'] == "AVAILABLE":
             break
-    return namespaceID, namespaceName, workgroupName
+    return namespaceID, namespaceName, workgroupName, adminUsername, adminUserPassword
     
 # save to Secret Manager
-def loadToSecretManager(creds):
+def loadToSecretManager(adminUsername, adminUserPassword):
     secretsmanagerClient = boto3.client('secretsmanager', region_name="us-west-2")
-    SecretString = '{"adminUsername":"%s","adminUserPassword":"%s"}' % (
+    SecretString = '{"adminUser":"%s","Password":"%s"}' % (
        adminUsername, adminUserPassword)
     response = secretsmanagerClient.create_secret(Name=f'redshiftSecret-{now_str}',
                                                   SecretString=SecretString)
