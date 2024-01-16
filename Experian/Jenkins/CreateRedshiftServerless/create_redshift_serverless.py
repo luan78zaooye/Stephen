@@ -64,10 +64,11 @@ def loadToSecretManager(adminUsername, adminUserPassword):
 # create nemespace and workgroup for serverless
 def createNamespaceWorkgroup(session, accountId, roleName):
     adminUserPW = getAdminPassword()
-    # create namespace
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
     namespaceName = f'ecs-{now_str}'
     workgroupName = "prod-rssls-01"
+
+    # create namespace
     namespaceResponse = rsServerlessClient.create_namespace(
         namespaceName=namespaceName,
         adminUsername='admin',
