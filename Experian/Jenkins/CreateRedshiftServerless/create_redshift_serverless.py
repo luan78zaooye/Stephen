@@ -50,7 +50,7 @@ def createNamespaceWorkgroup(session, accountId, roleName):
         iamRoles=[
             f"arn:aws:iam::{accountId}:role/{roleName}"
         ],
-        kmsKeyId='5dd84b8a-4989-4f2f-99fb-073e9499b6a9'
+        kmsKeyId='a81d3b4d-eba1-43f2-b5db-5b19d58ce5f6'
     )
 
     while True:
