@@ -63,6 +63,7 @@ def loadToSecretManager(adminUsername, adminUserPassword):
 
 # create nemespace and workgroup for serverless
 def createNamespaceWorkgroup(session, accountId, roleName):
+    adminUserPW = getAdminPassword()
     # create namespace
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
     namespaceName = f'ecs-{now_str}'
@@ -70,7 +71,7 @@ def createNamespaceWorkgroup(session, accountId, roleName):
     namespaceResponse = rsServerlessClient.create_namespace(
         namespaceName=namespaceName,
         adminUsername='admin',
-        adminUserPassword=getAdminPassword(),
+        adminUserPassword=adminUserPW,
         defaultIamRoleArn=f"arn:aws:iam::{accountId}:role/{roleName}",
         iamRoles=[
             f"arn:aws:iam::{accountId}:role/{roleName}"
@@ -116,11 +117,10 @@ def createNamespaceWorkgroup(session, accountId, roleName):
         if response['namespace']['status'] == "AVAILABLE":   
             break
             
-    # get admin user and password and save to secret manager       
+    # save admin user name and password to secret manager       
     adminUsername = response['namespace']['adminUsername']
-    adminUserPassword = response['namespace']['adminPasswordSecretArn']
     print("#" * 20, "loadToSecretManager", "#" * 20)
-    loadToSecretManager(adminUsername, adminUserPassword) 
+    loadToSecretManager(adminUsername, adminUserPW) 
     
     # get namespace id from namespaceResponse
     namespaceID = namespaceResponse['namespace']['namespaceId']
