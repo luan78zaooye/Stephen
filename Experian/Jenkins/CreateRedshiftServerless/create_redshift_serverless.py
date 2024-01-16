@@ -3,8 +3,9 @@ import boto3
 import os
 import time
 from datetime import datetime
+from pytz import timezone
 
-now = datetime.now()
+now = datetime.now(timezone('PST'))
 now_str = now.strftime("%Y%m%d%H%M%S")
 
 
