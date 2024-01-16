@@ -41,12 +41,14 @@ def getAdminPassword():
     # replace 1 or 2 characters with a number for the front half:
     for i in range(random.randrange(1, 3)):
         replace_index = random.randrange(len(admin_pw // 2)
-        admin_pw = admin_pw[:replace_index] + str(random.randrange(10)) + admin_pw[replace_index + 1:]
+        admin_pw = admin_pw[0:replace_index] + \
+              str(random.randrange(10)) + admin_pw[replace_index + 1:]
 
     # replace 1 or 2 characters with a uppercase letter for the back half:
     for i in range(random.randrange(1, 3)):
         replace_index = random.randrange(len(admin_pw // 2, len(admin_pw))
-        admin_pw = admin_pw[:replace_index] + admin_pw[replace_index].upper() + admin_pw[replace_index + 1:]
+        admin_pw = admin_pw[0:replace_index] + \
+              admin_pw[replace_index].upper() + admin_pw[replace_index + 1:]
         
 
 
