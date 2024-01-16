@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 from pytz import timezone
 
-now = datetime.now(timezone('PST'))
+now = datetime.now(timezone('US/Pacific'))
 now_str = now.strftime("%Y%m%d%H%M%S")
 
 
