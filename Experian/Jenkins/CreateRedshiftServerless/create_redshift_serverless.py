@@ -28,14 +28,28 @@ def set_boto_session(accountId=None, roleName=None):
     botosession = boto3.session.Session(**creds)
     return botosession, creds
 
+# new password for admin user
+def getAdminPassword():
+    passChars = "abcdefghijklmnopqrstuvwxyz1234567890"
+    pw_length = 16
+    admin_pw = ""
+    
+    for i in range(pw_length):
+        next_index = random.randrange(len(passChars))
+        admin_pw += passChars[next_index]
 
-# save to Secret Manager
-def loadToSecretManager(creds):
-    secretsmanagerClient = boto3.client('secretsmanager', region_name="us-west-2")
-    SecretString = '{"AccessKeyId":"%s","SecretAccessKey":"%s","SessionToken":"%s"}' % (
-        creds['aws_access_key_id'], creds['aws_secret_access_key'], creds['aws_session_token'])
-    response = secretsmanagerClient.create_secret(Name=f'redshiftSecret-{now_str}',
-                                                  SecretString=SecretString)
+    # replace 1 or 2 characters with a number for the front half:
+    for i in range(random.randrange(1, 3)):
+        replace_index = random.randrange(len(admin_pw // 2)
+        admin_pw = [:replace_index] + \
+                   str(random.randrange(10)) + admin_pw[replace_index + 1:]
+
+    # replace 1 or 2 characters with a uppercase letter for the back half:
+    for i in range(random.randrange(1, 3)):
+        replace_index = random.randrange(len(admin_pw // 2, len(admin_pw))
+        admin_pw = [:replace_index] + \
+                   admin_pw[replace_index].upper() + admin_pw[replace_index + 1:]
+        
 
 
 # create nemespace and workgroup for serverless
@@ -46,7 +60,7 @@ def createNamespaceWorkgroup(session, accountId, roleName):
     namespaceResponse = rsServerlessClient.create_namespace(
         namespaceName=namespaceName,
         adminUsername='admin',
-        adminUserPassword='Admin123',
+        adminUserPassword=getAdminPassword(),
         defaultIamRoleArn=f"arn:aws:iam::{accountId}:role/{roleName}",
         iamRoles=[
             f"arn:aws:iam::{accountId}:role/{roleName}"
@@ -145,12 +159,21 @@ def createNamespaceWorkgroup(session, accountId, roleName):
         if response['workgroup']['status'] == "AVAILABLE":
             break
     return namespaceID, namespaceName, workgroupName
+    
+# save to Secret Manager
+def loadToSecretManager(creds):
+    secretsmanagerClient = boto3.client('secretsmanager', region_name="us-west-2")
+    SecretString = '{"adminUsername":"%s","adminUserPassword":"%s"}' % (
+       adminUsername, adminUserPassword)
+    response = secretsmanagerClient.create_secret(Name=f'redshiftSecret-{now_str}',
+                                                  SecretString=SecretString)
 
 
 if __name__ == "__main__":
     print("#" * 20, "set_boto_session", "#" * 20)
     session, awscreds = set_boto_session("251338191197", "redshift_serverless_automation")
-    print("#" * 20, "loadToSecretManager", "#" * 20)
-    loadToSecretManager(awscreds)
     print("#" * 20, "createNamespaceWorkgroup", "#" * 20)
-    namespaceID, namespaceName, workgroupName = createNamespaceWorkgroup(session, "251338191197", "redshift_serverless_automation")
+    namespaceID, namespaceName, workgroupName, adminUsername, adminUserPassword = \
+               createNamespaceWorkgroup(session, "251338191197", "redshift_serverless_automation")
+    print("#" * 20, "loadToSecretManager", "#" * 20)
+    loadToSecretManager(adminUsername, adminUserPassword)
