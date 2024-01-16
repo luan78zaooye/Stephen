@@ -7,7 +7,7 @@ from datetime import datetime
 from pytz import timezone
 
 now = datetime.now(timezone('US/Pacific'))
-now_str = now.strftime("%Y%m%d%H%M%S")
+now_str = now.strftime("%Y%m%d")
 
 
 # key for test
@@ -53,13 +53,20 @@ def getAdminPassword():
         
     return admin_pw
         
-
+# save to Secret Manager
+def loadToSecretManager(adminUsername, adminUserPassword):
+    secretsmanagerClient = boto3.client('secretsmanager', region_name="us-west-2")
+    SecretString = '{"adminUser":"%s","Password":"%s"}' % (
+       adminUsername, adminUserPassword)
+    response = secretsmanagerClient.create_secret(Name=f'redshiftSecret-{now_str}',
+                                                  SecretString=SecretString)
 
 # create nemespace and workgroup for serverless
 def createNamespaceWorkgroup(session, accountId, roleName):
+    # create namespace
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
-    namespaceName = f'rs-serverless-namespace-{now_str}'
-    workgroupName = f'rs-serverless-workgroup-{now_str}'
+    namespaceName = f'ecs-{now_str}'
+    workgroupName = "prod-rssls-01"
     namespaceResponse = rsServerlessClient.create_namespace(
         namespaceName=namespaceName,
         adminUsername='admin',
@@ -106,12 +113,20 @@ def createNamespaceWorkgroup(session, accountId, roleName):
     while True:
         response = rsServerlessClient.get_namespace(namespaceName=namespaceName)
         time.sleep(10)
-        if response['namespace']['status'] == "AVAILABLE":
+        if response['namespace']['status'] == "AVAILABLE":   
             break
+            
+    # get admin user and password and save to secret manager       
+    adminUsername = response['namespace']['adminUsername']
+    adminUserPassword = response['namespace']['adminPasswordSecretArn']
+    print("#" * 20, "loadToSecretManager", "#" * 20)
+    loadToSecretManager(adminUsername, adminUserPassword) 
+    
     # get namespace id from namespaceResponse
     namespaceID = namespaceResponse['namespace']['namespaceId']
-    # namespaceID="XXX"
     namespaceArn = namespaceResponse['namespace']['namespaceArn']
+
+    # create workgroup
     workgroupResponse = rsServerlessClient.create_workgroup(
         baseCapacity=8,
         maxCapacity=8,
@@ -161,22 +176,13 @@ def createNamespaceWorkgroup(session, accountId, roleName):
         time.sleep(10)
         if response['workgroup']['status'] == "AVAILABLE":
             break
-    return namespaceID, namespaceName, workgroupName, adminUsername, adminUserPassword
+    return namespaceID, namespaceName, workgroupName
     
-# save to Secret Manager
-def loadToSecretManager(adminUsername, adminUserPassword):
-    secretsmanagerClient = boto3.client('secretsmanager', region_name="us-west-2")
-    SecretString = '{"adminUser":"%s","Password":"%s"}' % (
-       adminUsername, adminUserPassword)
-    response = secretsmanagerClient.create_secret(Name=f'redshiftSecret-{now_str}',
-                                                  SecretString=SecretString)
-
 
 if __name__ == "__main__":
     print("#" * 20, "set_boto_session", "#" * 20)
     session, awscreds = set_boto_session("251338191197", "redshift_serverless_automation")
     print("#" * 20, "createNamespaceWorkgroup", "#" * 20)
-    namespaceID, namespaceName, workgroupName, adminUsername, adminUserPassword = \
-               createNamespaceWorkgroup(session, "251338191197", "redshift_serverless_automation")
-    print("#" * 20, "loadToSecretManager", "#" * 20)
-    loadToSecretManager(adminUsername, adminUserPassword)
+    namespaceID, namespaceName, workgroupName = \
+         createNamespaceWorkgroup(session, "251338191197", "redshift_serverless_automation")
+    
