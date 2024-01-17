@@ -6,8 +6,8 @@ from datetime import datetime
 from pytz import timezone
 
 now = datetime.now(timezone('US/Pacific'))
-now_str = now.strftime("%Y%m%d")
-
+now_date = now.strftime("%Y%m%d")
+now_time = now.strftime("%Y%m%d_%H%M%S")
 
 # key for test
 # os.environ['AWS_ACCESS_KEY_ID']="xxx"
@@ -57,14 +57,14 @@ def loadToSecretManager(adminUsername, adminUserPassword):
     secretsmanagerClient = boto3.client('secretsmanager', region_name="us-west-2")
     SecretString = '{"adminUser":"%s","Password":"%s"}' % (
        adminUsername, adminUserPassword)
-    response = secretsmanagerClient.create_secret(Name=f'redshiftSecret-{now_str}',
+    response = secretsmanagerClient.create_secret(Name=f'redshiftSecret-{now_time}',
                                                   SecretString=SecretString)
 
 # create nemespace and workgroup for serverless
 def createNamespaceWorkgroup(session, accountId, roleName):
     adminUserPW = getAdminPassword()
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
-    namespaceName = f'ecs-{now_str}'
+    namespaceName = f'ecs-{now_date}'
     workgroupName = "prod-rssls-01"
 
     # create namespace
