@@ -114,7 +114,8 @@ def createNamespaceWorkgroup(session, accountId, roleName):
         time.sleep(10)
         if response['namespace']['status'] == "AVAILABLE":   
             break
-            
+
+    
     # save admin user name and password to secret manager       
     adminUsername = response['namespace']['adminUsername']
     print("#" * 20, "loadToSecretManager", "#" * 20)
@@ -170,7 +171,7 @@ def createNamespaceWorkgroup(session, accountId, roleName):
         time.sleep(10)
         if response['workgroup']['status'] == "AVAILABLE":
             break
-    return namespaceID, namespaceName, workgroupName
+    
     
 
 if __name__ == "__main__":
