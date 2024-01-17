@@ -1,4 +1,4 @@
-name: Create Redshift datashare between cluster and serverless
+name: Create Redshift Serverless Datashare
 
 on:
   workflow_dispatch:
