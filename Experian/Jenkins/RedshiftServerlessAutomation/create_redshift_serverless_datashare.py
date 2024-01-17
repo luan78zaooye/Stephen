@@ -2,7 +2,7 @@ import boto3
 import os
 import time
 from pytz import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
 from create_redshift_serverless import set_boto_session
 from create_redshift_serverless import namespaceName, workgroupName
 
@@ -50,6 +50,8 @@ def createDatashare(session, namespaceId):
         shareNames = [list(i[0].values())[0] for i in response['Records']]
         print("share_name", share_name)
         if len(response['Records']) != 0 and share_name in shareNames:
+            break
+        if datetime.now() - start_time > timedelta(seconds=50):
             break
     """From data share create DB for Serverless"""
     index = shareNames.index(share_name)
