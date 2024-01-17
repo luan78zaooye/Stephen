@@ -26,7 +26,7 @@ def set_boto_session(accountId=None, roleName=None):
     else:
         print("invalid `accountId` or `roleName`!")
     botosession = boto3.session.Session(**creds)
-    return botosession, creds
+    return botosession
 
 # new password for admin user
 def getAdminPassword():
