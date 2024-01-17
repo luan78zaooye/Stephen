@@ -40,6 +40,7 @@ def createDatashare(session, namespaceId):
     sql_query_datashare = "SHOW DATASHARES;"
     print("-" * 20, "Waiting for creating data share")
 
+    start_time = datetime.now()
     while True:
         physicalResponse = redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
                                                                 Database=database,
