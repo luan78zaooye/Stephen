@@ -121,10 +121,6 @@ def createNamespaceWorkgroup(session, accountId, roleName):
     adminUsername = response['namespace']['adminUsername']
     print("#" * 20, "loadToSecretManager", "#" * 20)
     loadToSecretManager(adminUsername, adminUserPW) 
-    
-    # get namespace id from namespaceResponse
-    namespaceID = namespaceResponse['namespace']['namespaceId']
-    namespaceArn = namespaceResponse['namespace']['namespaceArn']
 
     # create workgroup
     workgroupResponse = rsServerlessClient.create_workgroup(
