@@ -34,8 +34,7 @@ def getAdminPassword():
     for i in range(pw_length):
         num = random.randint(0, 9)
         letter = chr(random.randint(97, 122))
-        s = str(random.choice([num, letter])
-        admin_pw += s
+        admin_pw += str(random.choice([num, letter]))
         
     # replace 1 or 2 characters with a number for the front half:
     for i in range(random.randrange(1, 3)):
