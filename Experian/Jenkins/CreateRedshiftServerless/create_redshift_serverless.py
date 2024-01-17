@@ -2,6 +2,7 @@ import boto3
 import os
 import time
 import random
+import string
 from datetime import datetime
 from pytz import timezone
 
@@ -9,9 +10,6 @@ now = datetime.now(timezone('US/Pacific'))
 now_date = now.strftime("%Y%m%d")
 now_time = now.strftime("%Y%m%d_%H%M%S")
 
-# key for test
-# os.environ['AWS_ACCESS_KEY_ID']="xxx"
-# os.environ['AWS_SECRET_ACCESS_KEY']="xxx"
 
 # login
 def set_boto_session(accountId=None, roleName=None):
@@ -30,14 +28,15 @@ def set_boto_session(accountId=None, roleName=None):
 
 # new password for admin user
 def getAdminPassword():
-    passChars = "abcdefghijklmnopqrstuvwxyz1234567890"
     pw_length = 16
     admin_pw = ""
     
     for i in range(pw_length):
-        next_index = random.randrange(len(passChars))
-        admin_pw += passChars[next_index]
-
+        num = random.randint(0, 9)
+        letter = chr(random.randint(97, 122))
+        s = str(random.choice([num, letter])
+        admin_pw += s
+        
     # replace 1 or 2 characters with a number for the front half:
     for i in range(random.randrange(1, 3)):
         replace_index = random.randrange(len(admin_pw) // 2)
@@ -48,7 +47,7 @@ def getAdminPassword():
     for i in range(random.randrange(1, 3)):
         replace_index = random.randrange(len(admin_pw) // 2, len(admin_pw))
         admin_pw = admin_pw[:replace_index] + \
-               admin_pw[replace_index].upper() + admin_pw[replace_index + 1:]
+            random.choice(string.ascii_uppercase) + admin_pw[replace_index + 1:]
         
     return admin_pw
         
