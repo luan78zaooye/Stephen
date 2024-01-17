@@ -183,6 +183,6 @@ if __name__ == "__main__":
     print("#" * 20, "set_boto_session", "#" * 20)
     session, awscreds = set_boto_session("251338191197", "redshift_serverless_automation")
     print("#" * 20, "createNamespaceWorkgroup", "#" * 20)
-    namespaceID, namespaceName, workgroupName = 
+    namespaceID, namespaceName, workgroupName = \
          createNamespaceWorkgroup(session, "251338191197", "redshift_serverless_automation")
     
