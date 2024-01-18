@@ -62,14 +62,15 @@ def createDatashare(session, namespaceId):
     index = shareNames.index(share_name)
     print("-" * 20, f"data share `{share_name}` created")
     producer_namespace = list(response['Records'][index][-1].values())[0]
-    producer_account = list(response['Records'][index][-2].values())[0]
     return producer_namespace, share_name
 
 
 # create DB for serverless, from physical cluster data share
 def createDBforServerless(session,producer_namespace,workgroupName,share_name):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
-    
+    print('workgroupName: ' + workgroupName)
+    print('producer_namespace: ' + producer_namespace)
+    print('share_name: ' + share_name)
     sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} OF NAMESPACE '{producer_namespace}';"
     sql_createForServerless += "CREATE SCHEMA scratchpad;"
     sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'ecswarehouse' SCHEMA 'event';"
