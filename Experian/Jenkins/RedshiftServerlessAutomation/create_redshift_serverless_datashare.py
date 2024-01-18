@@ -22,6 +22,7 @@ def createDatashare(session, namespaceId):
     database = 'dev'
     dbuser = 'awsuser'
     consumer_namespace = namespaceId
+    print(namespaceId)
     # sql scripts for producer
     share_name = f"rawToServerless-{now_str}"
     sql_create_datashare = f"CREATE DATASHARE {share_name};"
@@ -50,7 +51,6 @@ def createDatashare(session, namespaceId):
         physicalResponseId = physicalResponse['Id']
         time.sleep(10)
         response = redshiftDataClient.get_statement_result(Id=physicalResponseId)
-        print(response)
         shareNames = [list(i[0].values())[0] for i in response['Records']]
         print("share_name", share_name)
         print("shareName", shareNames)
@@ -75,12 +75,6 @@ def createDBforServerless(session, producer_namespace, workgroupName, share_name
 
     serverlessResponse = redshiftDataClient.execute_statement(Database="dev", WorkgroupName=workgroupName,
                                                               Sql=sql_createForServerless)
-
-    # sql_test = "select * from share_db3.public.tableshare;"
-    # queryFromServerless = redshiftDataClient.execute_statement(Database ="dev",WorkgroupName=workgroupName,Sql=sql_test)
-    # time.sleep(3)
-    # serverlessResponseId = queryFromServerless['Id']
-    # response = redshiftDataClient.get_statement_result(Id=serverlessResponseId)
 
 
 # query from serverless to test if the DB is created from data share successfully
