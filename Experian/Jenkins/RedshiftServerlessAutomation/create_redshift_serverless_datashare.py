@@ -71,7 +71,7 @@ def createDBforServerless(session,producer_namespace,producer_account,workgroupN
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
     
     sql_createForServerless = f"CREATE DATABASE test FROM DATASHARE {share_name} OF ACCOUNT '{producer_account}' NAMESPACE '{producer_namespace}';"
-    sql_createForServerless += "CREATE SCHEMA scratchpad"
+    sql_createForServerless += "CREATE SCHEMA scratchpad;"
     sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'test' SCHEMA 'event';"
     sql_createForServerless += "GRANT USAGE ON SCHEMA event TO admin;"
 
