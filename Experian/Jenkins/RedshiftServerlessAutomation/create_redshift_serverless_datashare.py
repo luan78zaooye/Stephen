@@ -27,7 +27,7 @@ def createDatashare(session, namespaceId):
     sql_create_datashare = f"CREATE DATASHARE {share_name};"
     sql_create_datashare += f"GRANT USAGE ON DATASHARE {share_name} TO NAMESPACE '{consumer_namespace}';"
     sql_create_datashare += f"ALTER DATASHARE {share_name} ADD SCHEMA event;"
-    sql_create_datashare += f"ALTER DATASHARE {share_name} ADD ALL TABLES IN SCHEMA event;"
+    sql_create_datashare += f"ALTER DATASHARE {share_name} ADD TABLE event.sales100;"
     sql_create_datashare += f"ALTER DATASHARE {share_name} SET INCLUDENEW = TRUE FOR SCHEMA event;"
     # add more schema to datashare
     ##########
