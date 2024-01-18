@@ -20,7 +20,7 @@ def getNamespaceId(session, namespaceName):
 def createDatashare(session, namespaceId):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
     cluster_identifier = 'prod-rsraw-01'
-    database = 'dev'
+    database = 'test'
     db_user = 'awsuser'
     consumer_namespace = namespaceId
     # sql scripts for producer
@@ -70,9 +70,9 @@ def createDatashare(session, namespaceId):
 def createDBforServerless(session,producer_namespace,producer_account,workgroupName,share_name):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
     
-    sql_createForServerless = f"CREATE DATABASE share_db FROM DATASHARE {share_name} OF ACCOUNT '{producer_account}' NAMESPACE '{producer_namespace}';"
+    sql_createForServerless = f"CREATE DATABASE test FROM DATASHARE {share_name} OF ACCOUNT '{producer_account}' NAMESPACE '{producer_namespace}';"
 
-    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'share_db' SCHEMA 'event';"
+    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'test' SCHEMA 'event';"
     sql_createForServerless += "GRANT USAGE ON SCHEMA event TO admin;"
 
     
