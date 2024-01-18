@@ -82,7 +82,7 @@ def createDBforServerless(session,producer_namespace,producer_account,workgroupN
 # query from serverless to test if the DB is created from data share successfully
 def testQuery(session, workgroupName):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
-    sql_test = "select * from event.sales100 limit 2;"
+    sql_test = "select * from event.list limit 2;"
     queryFromServerless = redshiftDataClient.execute_statement(Database ="dev",WorkgroupName=workgroupName,Sql=sql_test)
     time.sleep(5)
     serverlessResponseId = queryFromServerless['Id']
