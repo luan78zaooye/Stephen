@@ -26,10 +26,10 @@ def createDatashare(session, namespaceId):
     # sql scripts for producer
     share_name = f"raw_serverless_{now_str}"
     sql_create_datashare = f"CREATE DATASHARE {share_name};"
-    sql_create_datashare += f"GRANT USAGE ON DATASHARE {share_name} TO NAMESPACE '{consumer_namespace}';"
     sql_create_datashare += f"ALTER DATASHARE {share_name} ADD SCHEMA event;"
     sql_create_datashare += f"ALTER DATASHARE {share_name} ADD ALL TABLES IN SCHEMA event;"
     sql_create_datashare += f"ALTER DATASHARE {share_name} SET INCLUDENEW = TRUE FOR SCHEMA event;"
+    sql_create_datashare += f"GRANT USAGE ON DATASHARE {share_name} TO NAMESPACE '{consumer_namespace}';"
     # add more schema to datashare
     ##########
     ##########
@@ -70,10 +70,10 @@ def createDatashare(session, namespaceId):
 def createDBforServerless(session,producer_namespace,producer_account,workgroupName,share_name):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
     
-    sql_createForServerless = f"create database share_db from datashare {share_name} of account '{producer_account}' namespace '{producer_namespace}';"
+    sql_createForServerless = f"CREATE DATABASE share_db FROM DATASHARE {share_name} OF ACCOUNT '{producer_account}' NAMESPACE '{producer_namespace}';"
 
-    sql_createForServerless += "grant usage on database share_db to admin;"
-    sql_createForServerless += "grant usage on schema event to admin;"
+    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'share_db' SCHEMA 'event';"
+    sql_createForServerless += "GRANT USAGE ON SCHEMA event TO admin;"
 
     
     serverlessResponse = redshiftDataClient.execute_statement(Database ="dev",WorkgroupName=workgroupName,Sql=sql_createForServerless)
