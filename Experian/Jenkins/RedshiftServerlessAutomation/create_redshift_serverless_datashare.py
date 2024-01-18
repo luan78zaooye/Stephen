@@ -62,17 +62,16 @@ def createDatashare(session, namespaceId):
     index = shareNames.index(share_name)
     print("-" * 20, f"data share `{share_name}` created")
     producer_namespace = list(response['Records'][index][-1].values())[0]
-    producer_account = list(response['Records'][index][-2].values())[0]
-    return producer_namespace,producer_account,share_name
+    return producer_namespace,share_name
 
 
 # create DB for serverless, from physical cluster data share
-def createDBforServerless(session,producer_namespace,producer_account,workgroupName,share_name):
+def createDBforServerless(session,producer_namespace,workgroupName,share_name):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
     
-    sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} OF ACCOUNT '{producer_account}' NAMESPACE '{producer_namespace}';"
+    sql_createForServerless = f"CREATE DATABASE test FROM DATASHARE {share_name} OF NAMESPACE '{producer_namespace}';"
     sql_createForServerless += "CREATE SCHEMA scratchpad;"
-    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'ecswarehouse' SCHEMA 'event';"
+    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'test' SCHEMA 'event';"
 
     
     serverlessResponse = redshiftDataClient.execute_statement(Database ="dev",WorkgroupName=workgroupName,Sql=sql_createForServerless)
@@ -95,9 +94,9 @@ if __name__ == "__main__":
     print("#" * 20, "getNamespaceId", "#" * 20)
     namespaceId = getNamespaceId(session, namespaceName)
     print("#" * 20, "createDatashare", "#" * 20)
-    producer_namespace,producer_account,share_name = createDatashare(session, namespaceId)
+    producer_namespace,share_name = createDatashare(session, namespaceId)
     print("#"*20,"createDBforServerless","#"*20)
-    createDBforServerless(session,producer_namespace,producer_account,workgroupName,share_name)
+    createDBforServerless(session,producer_namespace,workgroupName,share_name)
     print("#"*20,"testQuery","#"*20)
     testQuery(session,workgroupName)
 
