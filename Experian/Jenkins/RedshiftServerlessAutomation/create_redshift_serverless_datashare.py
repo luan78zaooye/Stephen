@@ -66,24 +66,22 @@ def createDatashare(session, namespaceId):
 
 
 # create DB for serverless, from physical cluster data share
-def createDBforServerlessAndTest(session, producer_namespace, workgroupName, share_name):
-    redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
+def createDBforServerless(session,producer_namespace,workgroupName,share_name):
+    redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
+    sql_createForServerless = f"create database share_db from datashare {share_name} of account namespace '{producer_namespace}';"
 
-    database = 'dev'
-    # sql scripts for consumer
-    sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} OF NAMESPACE '{producer_namespace}';"
-    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'ecswarehouse' SCHEMA 'event';"
-    sql_createForServerless += "GRANT USAGE ON SCHEMA event TO USER admin;"
+    sql_createForServerless += "grant usage on database share_db to admin;"
+    sql_createForServerless += "grant usage on schema public to admin;"
 
-    serverlessResponse = redshiftDataClient.execute_statement(Database=database,
-                                                              WorkgroupName=workgroupName,
-                                                              Sql=sql_createForServerless)
+    serverlessResponse = redshiftDataClient.execute_statement(Database ="dev",WorkgroupName=workgroupName,Sql=sql_createForServerless)
 
-    sql_test = "select * from event.sales100 limit 2;"
-    queryFromServerless = redshiftDataClient.execute_statement(Database=database,
-                                                               WorkgroupName=workgroupName,
-                                                               Sql=sql_test)
-    time.sleep(10)
+
+# query from serverless to test if the DB is created from data share successfully
+def testQuery(session,workgroupName):
+    redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
+    sql_test = "select * from share_db.public.tableshare limit 2;"
+    queryFromServerless = redshiftDataClient.execute_statement(Database ="dev",WorkgroupName=workgroupName,Sql=sql_test)
+    time.sleep(5)
     serverlessResponseId = queryFromServerless['Id']
     response = redshiftDataClient.get_statement_result(Id=serverlessResponseId)
     print(response)
@@ -96,6 +94,8 @@ if __name__ == "__main__":
     namespaceId = getNamespaceId(session, namespaceName)
     print("#" * 20, "createDatashare", "#" * 20)
     producer_namespace, share_name = createDatashare(session, namespaceId)
-    print("#" * 20, "createDBforServerless + test", "#" * 20)
-    createDBforServerlessAndTest(session, producer_namespace, workgroupName, share_name)
+    print("#"*20,"createDBforServerless","#"*20)
+    createDBforServerless(session,producer_namespace,workgroupName,share_name)
+    print("#"*20,"testQuery","#"*20)
+    testQuery(session,workgroupName)
 
