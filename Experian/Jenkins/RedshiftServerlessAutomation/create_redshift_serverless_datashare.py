@@ -4,7 +4,7 @@ import time
 from pytz import timezone
 from datetime import datetime, timedelta
 from create_redshift_serverless import set_boto_session
-from create_redshift_serverless import namespaceName, workgroupName
+from create_redshift_serverless import workgroupName
 
 now = datetime.now(timezone('US/Pacific'))
 now_str = now.strftime("%Y%m%d")
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     print("#" * 20, "set_boto_session", "#" * 20)
     session = set_boto_session("251338191197", "redshift_serverless_automation")
     print("#" * 20, "getNamespaceId", "#" * 20)
-    namespaceId = getNamespaceId(session, namespaceName)
+    namespaceId = getNamespaceId(session, 'ecs-20240117')
     print("#" * 20, "createDatashare", "#" * 20)
     producer_namespace, producer_account, share_name = createDatashare(session, namespaceId)
     print("#"*20,"createDBforServerless","#"*20)
