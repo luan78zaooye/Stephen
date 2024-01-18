@@ -25,15 +25,14 @@ def createDatashare(session, namespaceId):
     consumer_namespace = namespaceId
     # sql scripts for producer
     share_name = f"Raw_serverless_{now_str}"
+    share_name2 = f"Raw_sls_{now_str}"
     sql_create_datashare = f"CREATE DATASHARE {share_name};"
+    sql_create_datashare += f"CREATE DATASHARE {share_name2};"
     sql_create_datashare += f"GRANT USAGE ON DATASHARE {share_name} TO NAMESPACE '{consumer_namespace}';"
+    sql_create_datashare += f"GRANT USAGE ON DATASHARE {share_name2} TO NAMESPACE '{consumer_namespace}';"
     sql_create_datashare += f"ALTER DATASHARE {share_name} ADD SCHEMA event;"
     sql_create_datashare += f"ALTER DATASHARE {share_name} ADD ALL TABLES IN SCHEMA event;"
     sql_create_datashare += f"ALTER DATASHARE {share_name} SET INCLUDENEW = TRUE FOR SCHEMA event;"
-
-    share_name2 = f"Raw_sls_{now_str}"
-    sql_create_datashare += f"CREATE DATASHARE {share_name2};"
-    sql_create_datashare += f"GRANT USAGE ON DATASHARE {share_name2} TO NAMESPACE '{consumer_namespace}';"
     sql_create_datashare += f"ALTER DATASHARE {share_name2} ADD SCHEMA dwh;"
     sql_create_datashare += f"ALTER DATASHARE {share_name2} ADD ALL TABLES IN SCHEMA dwh;"
     sql_create_datashare += f"ALTER DATASHARE {share_name2} SET INCLUDENEW = TRUE FOR SCHEMA dwh;"
@@ -57,14 +56,14 @@ def createDatashare(session, namespaceId):
                                                                 DbUser=db_user,
                                                                 Sql=sql_query_datashare)
         physicalResponseId = physicalResponse['Id']
-        time.sleep(5)
+        time.sleep(10)
         response = redshiftDataClient.get_statement_result(Id=physicalResponseId)
         shareNames = [list(i[0].values())[0] for i in response['Records']]
         print(response['Records'])
         print("share_name", share_name)
         if len(response['Records']) != 0 and share_name in shareNames:     
             break
-        if datetime.now() - start_time > timedelta(seconds=30):
+        if datetime.now() - start_time > timedelta(seconds=60):
             break
     """From data share create DB for Serverless"""
     index = shareNames.index(share_name)
