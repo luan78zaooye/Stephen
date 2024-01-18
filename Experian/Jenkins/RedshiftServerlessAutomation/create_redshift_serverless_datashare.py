@@ -70,8 +70,7 @@ def createDatashare(session, namespaceId):
 def createDBforServerless(session,producer_namespace,producer_account,workgroupName,share_name):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
     
-    sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} 
-                OF ACCOUNT '{producer_account}' NAMESPACE '{producer_namespace}';"
+    sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} OF ACCOUNT '{producer_account}' NAMESPACE '{producer_namespace}';"
     sql_createForServerless += "CREATE SCHEMA scratchpad;"
     sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'ecswarehouse' SCHEMA 'event';"
 
