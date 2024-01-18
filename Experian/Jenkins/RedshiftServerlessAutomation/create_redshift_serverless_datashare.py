@@ -67,24 +67,24 @@ def createDatashare(session, namespaceId):
 
 
 # create DB for serverless, from physical cluster data share
-def createDBforServerless(session, producer_namespace, workgroupName, share_name):
+def createDBforServerlessAndTest(session, producer_namespace, workgroupName, share_name):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
+
+    database = 'dev'
+    db_user = 'admin'
     # sql scripts for consumer
     sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} OF NAMESPACE '{producer_namespace}';"
     sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE ecswarehouse SCHEMA event;"
-    sql_createForServerless += "GRANT USAGE ON SCHEMA event to admin;"
 
-    serverlessResponse = redshiftDataClient.execute_statement(Database="dev", WorkgroupName=workgroupName,
+    serverlessResponse = redshiftDataClient.execute_statement(Database=database, DbUser=db_user, 
+                                                              WorkgroupName=workgroupName,
                                                               Sql=sql_createForServerless)
 
-
-# query from serverless to test if the DB is created from data share successfully
-def testQuery(session, workgroupName):
-    redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
     sql_test = "select * from event.sales100 limit 2;"
-    queryFromServerless = redshiftDataClient.execute_statement(Database="dev", WorkgroupName=workgroupName,
+    queryFromServerless = redshiftDataClient.execute_statement(Database=database, DbUser=db_user,
+                                                               WorkgroupName=workgroupName,
                                                                Sql=sql_test)
-    time.sleep(10)
+    time.sleep(15)
     serverlessResponseId = queryFromServerless['Id']
     response = redshiftDataClient.get_statement_result(Id=serverlessResponseId)
     print(response)
@@ -97,7 +97,6 @@ if __name__ == "__main__":
     namespaceId = getNamespaceId(session, namespaceName)
     print("#" * 20, "createDatashare", "#" * 20)
     producer_namespace, share_name = createDatashare(session, namespaceId)
-    print("#" * 20, "createDBforServerless", "#" * 20)
-    createDBforServerless(session, producer_namespace, workgroupName, share_name)
-    print("#" * 20, "testQuery", "#" * 20)
-    testQuery(session, workgroupName)
+    print("#" * 20, "createDBforServerless + test", "#" * 20)
+    createDBforServerlessAndTest(session, producer_namespace, workgroupName, share_name)
+
