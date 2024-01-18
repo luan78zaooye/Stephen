@@ -68,18 +68,18 @@ def createDatashare(session, namespaceId):
 # create DB for serverless, from physical cluster data share
 def createDBforServerless(session,producer_namespace,workgroupName,share_name):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
-    sql_createForServerless = f"create database share_db from datashare {share_name} of account namespace '{producer_namespace}';"
-
-    sql_createForServerless += "grant usage on database share_db to admin;"
-    sql_createForServerless += "grant usage on schema public to admin;"
-
+    
+    sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} OF NAMESPACE '{producer_namespace}';"
+    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'ecswarehouse' SCHEMA 'event';"
+    sql_createForServerless += "GRANT USAGE ON SCHEMA event TO admin;"
+    
     serverlessResponse = redshiftDataClient.execute_statement(Database ="dev",WorkgroupName=workgroupName,Sql=sql_createForServerless)
 
 
 # query from serverless to test if the DB is created from data share successfully
-def testQuery(session,workgroupName):
+def testQuery(session, workgroupName):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
-    sql_test = "select * from share_db.public.tableshare limit 2;"
+    sql_test = "select * from event.sales100 limit 2;"
     queryFromServerless = redshiftDataClient.execute_statement(Database ="dev",WorkgroupName=workgroupName,Sql=sql_test)
     time.sleep(5)
     serverlessResponseId = queryFromServerless['Id']
