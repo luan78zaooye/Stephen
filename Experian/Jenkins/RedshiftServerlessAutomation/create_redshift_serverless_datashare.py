@@ -56,7 +56,7 @@ def createDatashare(session, namespaceId):
         print("shareName", shareNames)
         if len(response['Records']) != 0 and share_name in shareNames:
             break
-        if datetime.now() - start_time > timedelta(seconds=50):
+        if datetime.now() - start_time > timedelta(seconds=80):
             print(consumer_namespace)
             break
     """From data share create DB for Serverless"""
