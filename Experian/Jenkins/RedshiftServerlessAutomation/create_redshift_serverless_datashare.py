@@ -72,10 +72,9 @@ def createDBforServerlessAndTest(session, producer_namespace, workgroupName, sha
     database = 'dev'
     # sql scripts for consumer
     sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} OF NAMESPACE '{producer_namespace}';"
-    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE ecswarehouse SCHEMA event;"
+    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'ecswarehouse' SCHEMA 'event';"
     sql_createForServerless += "GRANT USAGE ON SCHEMA event TO USER admin;"
 
-    print('workgroup name: ' + workgroupName)
     serverlessResponse = redshiftDataClient.execute_statement(Database=database,
                                                               WorkgroupName=workgroupName,
                                                               Sql=sql_createForServerless)
@@ -84,7 +83,7 @@ def createDBforServerlessAndTest(session, producer_namespace, workgroupName, sha
     queryFromServerless = redshiftDataClient.execute_statement(Database=database,
                                                                WorkgroupName=workgroupName,
                                                                Sql=sql_test)
-    time.sleep(15)
+    time.sleep(10)
     serverlessResponseId = queryFromServerless['Id']
     response = redshiftDataClient.get_statement_result(Id=serverlessResponseId)
     print(response)
