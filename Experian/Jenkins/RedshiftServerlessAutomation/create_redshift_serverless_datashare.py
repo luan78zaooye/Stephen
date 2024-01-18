@@ -47,6 +47,7 @@ def createDatashare(session, namespaceId):
     while True:
         physicalResponse = redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
                                                                 Database=database,
+                                                                DbUser=db_user,
                                                                 Sql=sql_query_datashare)
         physicalResponseId = physicalResponse['Id']
         time.sleep(10)
@@ -56,7 +57,7 @@ def createDatashare(session, namespaceId):
         print(shareNames)
         if len(response['Records']) != 0 and share_name in shareNames:
             break
-        if datetime.now() - start_time > timedelta(seconds=50):
+        if datetime.now() - start_time > timedelta(seconds=120):
             break
     """From data share create DB for Serverless"""
     index = shareNames.index(share_name)
