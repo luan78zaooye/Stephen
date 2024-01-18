@@ -68,9 +68,7 @@ def createDatashare(session, namespaceId):
 # create DB for serverless, from physical cluster data share
 def createDBforServerless(session,producer_namespace,workgroupName,share_name):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
-    print('workgroupName: ' + workgroupName)
-    print('producer_namespace: ' + producer_namespace)
-    print('share_name: ' + share_name)
+    
     sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} OF NAMESPACE '{producer_namespace}';"
     sql_createForServerless += "CREATE SCHEMA scratchpad;"
     sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'ecswarehouse' SCHEMA 'event';"
