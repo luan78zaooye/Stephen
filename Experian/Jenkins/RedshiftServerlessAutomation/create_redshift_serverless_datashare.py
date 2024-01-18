@@ -96,7 +96,7 @@ if __name__ == "__main__":
     print("#" * 20, "getNamespaceId", "#" * 20)
     namespaceId = getNamespaceId(session, namespaceName)
     print("#" * 20, "createDatashare", "#" * 20)
-    producer_namespace, share_name = createDatashare(session, namespaceId)
+    producer_namespace, producer_account, share_name = createDatashare(session, namespaceId)
     print("#"*20,"createDBforServerless","#"*20)
     createDBforServerless(session,producer_namespace,producer_account,workgroupName,share_name)
     print("#"*20,"testQuery","#"*20)
