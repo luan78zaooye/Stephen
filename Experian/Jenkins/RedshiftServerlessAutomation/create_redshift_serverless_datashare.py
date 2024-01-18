@@ -22,7 +22,6 @@ def createDatashare(session, namespaceId):
     database = 'dev'
     dbuser = 'awsuser'
     consumer_namespace = namespaceId
-    print(namespaceId)
     # sql scripts for producer
     share_name = f"rawToServerless-{now_str}"
     sql_create_datashare = f"CREATE DATASHARE {share_name};"
@@ -57,6 +56,7 @@ def createDatashare(session, namespaceId):
         if len(response['Records']) != 0 and share_name in shareNames:
             break
         if datetime.now() - start_time > timedelta(seconds=30):
+            print(consumer_namespace)
             break
     """From data share create DB for Serverless"""
     index = shareNames.index(share_name)
