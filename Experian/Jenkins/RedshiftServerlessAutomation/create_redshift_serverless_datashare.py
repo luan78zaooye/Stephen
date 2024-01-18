@@ -62,6 +62,7 @@ def createDatashare(session, namespaceId):
     index = shareNames.index(share_name)
     print("-" * 20, f"data share `{share_name}` created")
     producer_namespace = list(response['Records'][index][-1].values())[0]
+    print(producer_namespace)
     return producer_namespace, share_name
 
 
@@ -71,7 +72,7 @@ def createDBforServerless(session, producer_namespace, workgroupName, share_name
     # sql scripts for consumer
     sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} OF NAMESPACE '{producer_namespace}';"
     sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE ecswarehouse SCHEMA event;"
-  # sql_createForServerless += "GRANT USAGE ON SCHEMA event to group/user;"
+    sql_createForServerless += "GRANT USAGE ON SCHEMA event to admin;"
 
     serverlessResponse = redshiftDataClient.execute_statement(Database="dev", WorkgroupName=workgroupName,
                                                               Sql=sql_createForServerless)
@@ -83,7 +84,7 @@ def testQuery(session, workgroupName):
     sql_test = "select * from event.sales100 limit 2;"
     queryFromServerless = redshiftDataClient.execute_statement(Database="dev", WorkgroupName=workgroupName,
                                                                Sql=sql_test)
-    time.sleep(3)
+    time.sleep(10)
     serverlessResponseId = queryFromServerless['Id']
     response = redshiftDataClient.get_statement_result(Id=serverlessResponseId)
     print(response)
