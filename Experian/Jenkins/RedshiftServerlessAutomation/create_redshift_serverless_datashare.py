@@ -20,7 +20,7 @@ def createDatashare(session, namespaceId):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
     cluster_identifier = 'prod-rsraw-01'
     database = 'dev'
-    dauser = 'awsuser'
+    dbuser = 'awsuser'
     consumer_namespace = namespaceId
     # sql scripts for producer
     share_name = f"rawToServerless-{now_str}"
