@@ -62,7 +62,7 @@ def createDatashare(session, namespaceId):
     index = shareNames.index(share_name)
     print("-" * 20, f"data share `{share_name}` created")
     producer_namespace = list(response['Records'][index][-1].values())[0]
-    return producer_account, producer_namespace, share_name
+    return producer_namespace, share_name
 
 
 # create DB for serverless, from physical cluster data share
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     print("#" * 20, "getNamespaceId", "#" * 20)
     namespaceId = getNamespaceId(session, namespaceName)
     print("#" * 20, "createDatashare", "#" * 20)
-    producer_account, producer_namespace, share_name = createDatashare(session, namespaceId)
+    producer_namespace, share_name = createDatashare(session, namespaceId)
     print("#" * 20, "createDBforServerless", "#" * 20)
     createDBforServerless(session, producer_namespace, workgroupName, share_name)
     print("#" * 20, "testQuery", "#" * 20)
