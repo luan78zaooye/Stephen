@@ -4,7 +4,7 @@ import time
 from pytz import timezone
 from datetime import datetime, timedelta
 from create_redshift_serverless import set_boto_session
-from create_redshift_serverless import workgroupName
+from create_redshift_serverless import workgroupName, namespaceName
 
 now = datetime.now(timezone('US/Pacific'))
 now_str = now.strftime("%Y%m%d")
@@ -20,7 +20,7 @@ def getNamespaceId(session, namespaceName):
 def createDatashare(session, namespaceId):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
     cluster_identifier = 'prod-rsraw-01'
-    database = 'test'
+    database = 'dev'
     db_user = 'awsuser'
     consumer_namespace = namespaceId
     # sql scripts for producer
@@ -63,17 +63,16 @@ def createDatashare(session, namespaceId):
     print("-" * 20, f"data share `{share_name}` created")
     producer_namespace = list(response['Records'][index][-1].values())[0]
     producer_account = list(response['Records'][index][-2].values())[0]
-    return producer_namespace, producer_account, share_name
+    return producer_namespace, share_name
 
 
 # create DB for serverless, from physical cluster data share
-def createDBforServerless(session,producer_namespace,producer_account,workgroupName,share_name):
+def createDBforServerless(session,producer_namespace,workgroupName,share_name):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
     
-    sql_createForServerless = f"CREATE DATABASE test FROM DATASHARE {share_name} OF ACCOUNT '{producer_account}' NAMESPACE '{producer_namespace}';"
+    sql_createForServerless = f"CREATE DATABASE ecswarehouse FROM DATASHARE {share_name} OF NAMESPACE '{producer_namespace}';"
     sql_createForServerless += "CREATE SCHEMA scratchpad;"
-    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'test' SCHEMA 'event';"
-    sql_createForServerless += "GRANT USAGE ON SCHEMA event TO admin;"
+    sql_createForServerless += "CREATE EXTERNAL SCHEMA event FROM REDSHIFT DATABASE 'ecswarehouse' SCHEMA 'event';"
 
     
     serverlessResponse = redshiftDataClient.execute_statement(Database ="dev",WorkgroupName=workgroupName,Sql=sql_createForServerless)
@@ -82,7 +81,7 @@ def createDBforServerless(session,producer_namespace,producer_account,workgroupN
 # query from serverless to test if the DB is created from data share successfully
 def testQuery(session, workgroupName):
     redshiftDataClient = session.client("redshift-data",region_name="us-west-2")
-    sql_test = "select * from test.event.list limit 2;"
+    sql_test = "select * from dev.event.list limit 2;"
     queryFromServerless = redshiftDataClient.execute_statement(Database ="dev",WorkgroupName=workgroupName,Sql=sql_test)
     time.sleep(10)
     serverlessResponseId = queryFromServerless['Id']
@@ -94,11 +93,11 @@ if __name__ == "__main__":
     print("#" * 20, "set_boto_session", "#" * 20)
     session = set_boto_session("251338191197", "redshift_serverless_automation")
     print("#" * 20, "getNamespaceId", "#" * 20)
-    namespaceId = getNamespaceId(session, 'ecs-20240117')
+    namespaceId = getNamespaceId(session, namespaceName)
     print("#" * 20, "createDatashare", "#" * 20)
-    producer_namespace, producer_account, share_name = createDatashare(session, namespaceId)
+    producer_namespace, share_name = createDatashare(session, namespaceId)
     print("#"*20,"createDBforServerless","#"*20)
-    createDBforServerless(session,producer_namespace,producer_account,workgroupName,share_name)
+    createDBforServerless(session,producer_namespace,workgroupName,share_name)
     print("#"*20,"testQuery","#"*20)
     testQuery(session,workgroupName)
 
