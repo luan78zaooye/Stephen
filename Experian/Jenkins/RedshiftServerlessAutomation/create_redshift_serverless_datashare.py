@@ -30,6 +30,13 @@ def createDatashare(session, namespaceId):
     sql_create_datashare += f"ALTER DATASHARE {share_name} ADD SCHEMA event;"
     sql_create_datashare += f"ALTER DATASHARE {share_name} ADD ALL TABLES IN SCHEMA event;"
     sql_create_datashare += f"ALTER DATASHARE {share_name} SET INCLUDENEW = TRUE FOR SCHEMA event;"
+
+    share_name2 = f"Raw_sls_{now_str}"
+    sql_create_datashare += f"CREATE DATASHARE {share_name2};"
+    sql_create_datashare += f"GRANT USAGE ON DATASHARE {share_name2} TO NAMESPACE '{consumer_namespace}';"
+    sql_create_datashare += f"ALTER DATASHARE {share_name2} ADD SCHEMA public;"
+    sql_create_datashare += f"ALTER DATASHARE {share_name2} ADD ALL TABLES IN SCHEMA public;"
+    sql_create_datashare += f"ALTER DATASHARE {share_name2} SET INCLUDENEW = TRUE FOR SCHEMA public;"
     # add more schema to datashare
     ##########
     ##########
@@ -57,7 +64,7 @@ def createDatashare(session, namespaceId):
         print("share_name", share_name)
         if len(response['Records']) != 0 and share_name in shareNames:     
             break
-        if datetime.now() - start_time > timedelta(seconds=100):
+        if datetime.now() - start_time > timedelta(seconds=50):
             break
     """From data share create DB for Serverless"""
     index = shareNames.index(share_name)
