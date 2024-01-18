@@ -9,7 +9,8 @@ from pytz import timezone
 now = datetime.now(timezone('US/Pacific'))
 now_date = now.strftime("%Y%m%d")
 now_time = now.strftime("%Y%m%d_%H%M%S")
-namespaceName = f'ecs-{now_date}'
+s = f'ecs-{now_date}'
+namespaceName = s
 workgroupName = "prod-rssls-01"
 
 
