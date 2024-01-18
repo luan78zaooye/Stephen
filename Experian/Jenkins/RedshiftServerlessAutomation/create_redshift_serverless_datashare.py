@@ -34,9 +34,9 @@ def createDatashare(session, namespaceId):
     share_name2 = f"Raw_sls_{now_str}"
     sql_create_datashare += f"CREATE DATASHARE {share_name2};"
     sql_create_datashare += f"GRANT USAGE ON DATASHARE {share_name2} TO NAMESPACE '{consumer_namespace}';"
-    sql_create_datashare += f"ALTER DATASHARE {share_name2} ADD SCHEMA public;"
-    sql_create_datashare += f"ALTER DATASHARE {share_name2} ADD ALL TABLES IN SCHEMA public;"
-    sql_create_datashare += f"ALTER DATASHARE {share_name2} SET INCLUDENEW = TRUE FOR SCHEMA public;"
+    sql_create_datashare += f"ALTER DATASHARE {share_name2} ADD SCHEMA dwh;"
+    sql_create_datashare += f"ALTER DATASHARE {share_name2} ADD ALL TABLES IN SCHEMA dwh;"
+    sql_create_datashare += f"ALTER DATASHARE {share_name2} SET INCLUDENEW = TRUE FOR SCHEMA dwh;"
     # add more schema to datashare
     ##########
     ##########
@@ -57,14 +57,14 @@ def createDatashare(session, namespaceId):
                                                                 DbUser=db_user,
                                                                 Sql=sql_query_datashare)
         physicalResponseId = physicalResponse['Id']
-        time.sleep(10)
+        time.sleep(5)
         response = redshiftDataClient.get_statement_result(Id=physicalResponseId)
         shareNames = [list(i[0].values())[0] for i in response['Records']]
         print(response['Records'])
         print("share_name", share_name)
         if len(response['Records']) != 0 and share_name in shareNames:     
             break
-        if datetime.now() - start_time > timedelta(seconds=50):
+        if datetime.now() - start_time > timedelta(seconds=30):
             break
     """From data share create DB for Serverless"""
     index = shareNames.index(share_name)
