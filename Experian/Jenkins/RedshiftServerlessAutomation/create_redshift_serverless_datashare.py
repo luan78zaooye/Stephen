@@ -52,9 +52,10 @@ def createDatashare(session, namespaceId):
         response = redshiftDataClient.get_statement_result(Id=physicalResponseId)
         shareNames = [list(i[0].values())[0] for i in response['Records']]
         print("share_name", share_name)
+        print("shareName", shareNames)
         if len(response['Records']) != 0 and share_name in shareNames:
             break
-        if datetime.now() - start_time > timedelta(seconds=60):
+        if datetime.now() - start_time > timedelta(seconds=50):
             break
     """From data share create DB for Serverless"""
     index = shareNames.index(share_name)
