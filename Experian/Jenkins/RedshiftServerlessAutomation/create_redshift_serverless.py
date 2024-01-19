@@ -1,5 +1,4 @@
 import boto3
-import os
 import time
 import random
 import string
@@ -9,8 +8,8 @@ from pytz import timezone
 now = datetime.now(timezone('US/Pacific'))
 now_date = now.strftime("%Y%m%d")
 now_time = now.strftime("%Y%m%d_%H%M%S")
-s = f'ecs-{now_date}'
-namespaceName = s
+
+namespaceName = f'ecs-{now_date}'
 workgroupName = "prod-rssls-01"
 
 

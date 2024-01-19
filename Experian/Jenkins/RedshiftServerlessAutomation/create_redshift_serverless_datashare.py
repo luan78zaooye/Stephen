@@ -1,19 +1,18 @@
 import boto3
-import os
 import time
 from pytz import timezone
 from datetime import datetime, timedelta
 from create_redshift_serverless import set_boto_session
-from create_redshift_serverless import workgroupName, namespaceName
+from create_redshift_serverless import workgroupName
 
 now = datetime.now(timezone('US/Pacific'))
 now_str = now.strftime("%Y%m%d")
 
 
-def getNamespaceId(session, namespaceName):
+def getNamespaceId(session):
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
-    namespaceResponse = rsServerlessClient.get_namespace(namespaceName=namespaceName)
-    namespaceId = namespaceResponse['namespace']['namespaceId']
+    NamespacesResponse = rsServerlessClient.list_namespaces()
+    namespaceId = NamespacesResponse['namespaces']['namespaceId']
     return namespaceId
 
 # create datashare from physical cluster
@@ -92,7 +91,7 @@ if __name__ == "__main__":
     print("#" * 20, "set_boto_session", "#" * 20)
     session = set_boto_session("251338191197", "redshift_serverless_automation")
     print("#" * 20, "getNamespaceId", "#" * 20)
-    namespaceId = getNamespaceId(session, namespaceName)
+    namespaceId = getNamespaceId(session)
     print("#" * 20, "createDatashare", "#" * 20)
     producer_namespace, share_name = createDatashare(session, namespaceId)
     print("#"*20,"createDBforServerless","#"*20)
