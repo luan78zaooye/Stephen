@@ -62,7 +62,6 @@ def createDatashare(session, namespaceId):
     index = shareNames.index(share_name)
     print("-" * 20, f"data share `{share_name}` created")
     producer_namespace = list(response['Records'][index][-1].values())[0]
-    producer_account = list(response['Records'][index][-2].values())[0]
     return producer_namespace, share_name
 
 
