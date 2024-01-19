@@ -28,7 +28,7 @@ jobs:
     - name: Execute python code
       env:
         AWS_ACCESS_KEY_ID: ${{github.event.inputs.AWS_ACCESS_KEY_ID}}
-        AWS_ACCESS_SECRET_KEY: ${{github.event.inputs.AWS_ACCESS_SECRET_KEY}}
+        AWS_SECRET_ACCESS_KEY: ${{github.event.inputs.AWS_ACCESS_SECRET_KEY}}
       run: |
         cd Experian/Jenkins/RedshiftServerlessAutomation/
         python create_redshift_serverless.py
