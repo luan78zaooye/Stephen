@@ -12,6 +12,9 @@ now_time = now.strftime("%Y%m%d_%H%M%S")
 namespaceName = f'ecs-{now_date}'
 workgroupName = "prod-rssls-01"
 
+# key for test
+os.environ['AWS_ACCESS_KEY_ID']="AKIATVBHMOFOU4KRXBUA"
+os.environ['AWS_SECRET_ACCESS_KEY']="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"
 
 # login
 def set_boto_session(accountId=None, roleName=None):
