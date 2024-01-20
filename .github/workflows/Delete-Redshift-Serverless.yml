@@ -1,0 +1,34 @@
+name: Delete Redshift Serverless
+
+on:
+  workflow_dispatch:
+    inputs:
+      AWS_ACCESS_KEY_ID:
+        description: "access key ID"
+        required: true
+      AWS_ACCESS_SECRET_KEY:
+        description: "secret access key"
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: pip install boto3
+           pip install pytz
+    - name: Execute python code
+      env:
+        AWS_ACCESS_KEY_ID: ${{github.event.inputs.AWS_ACCESS_KEY_ID}}
+        AWS_SECRET_ACCESS_KEY: ${{github.event.inputs.AWS_ACCESS_SECRET_KEY}}
+      run: |
+        cd Experian/Jenkins/RedshiftServerlessAutomation/
+        python delete_redshift_serverless.py
