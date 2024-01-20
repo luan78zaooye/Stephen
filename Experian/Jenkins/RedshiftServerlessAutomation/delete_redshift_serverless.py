@@ -5,7 +5,7 @@ import os
 from create_redshift_serverless import set_boto_session
 
 
-def deleteExistWorkgroupNamespace(session):
+def deleteWorkgroupNamespace(session):
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
     WorkgroupsResponse = rsServerlessClient.list_workgroups()
     workgroupName = WorkgroupsResponse['workgroups'][0]['workgroupName']
@@ -44,5 +44,7 @@ def deleteExistWorkgroupNamespace(session):
 
 
 if __name__ == "__main__":
-    session, awscreds = set_boto_session("251338191197", "redshift_serverless_automation")
-    deleteExistWorkgroupNamespace(session)
+    print("#" * 20, "set_boto_session", "#" * 20)
+    session = set_boto_session("251338191197", "redshift_serverless_automation")
+    print("#" * 20, "deleteNamespaceWorkgroup", "#" * 20)
+    deleteWorkgroupNamespace(session)
