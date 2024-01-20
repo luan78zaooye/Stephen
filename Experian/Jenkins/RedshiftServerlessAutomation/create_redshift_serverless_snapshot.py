@@ -38,10 +38,10 @@ def deleteObsoleteSnapshot(session):
         print(f"Number of Snapshots reaches limit {MaxSnapshotNum}")
         for i in range(MaxSnapshotNum, len(allSnapshots)):
             snapshotName = allSnapshots[i][0]
-            print(f"Dealing snapshot {snapshotName}")
+            print(f"Need to delete snapshot {snapshotName}")
             response = rsServerlessClient.delete_snapshot(snapshotName=snapshotName)
             if response["snapshot"]["status"] == "DELETED":
-                print(f"Deleting snapshot {snapshotName}")
+                print(f"snapshot {snapshotName} is deleted")
 
 
 if __name__ == "__main__":
