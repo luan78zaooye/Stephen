@@ -12,7 +12,7 @@ now_str = now.strftime("%Y%m%d")
 def getNamespaceId(session):
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
     NamespacesResponse = rsServerlessClient.list_namespaces()
-    namespaceId = NamespacesResponse['namespaces']['namespaceId']
+    namespaceId = NamespacesResponse['namespaces'][0]['namespaceId']
     return namespaceId
 
 # create datashare from physical cluster
