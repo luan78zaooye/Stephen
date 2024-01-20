@@ -12,7 +12,7 @@ MaxSnapshotNum = 12
 def getNamespaceName(session):
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
     NamespacesResponse = rsServerlessClient.list_namespaces()
-    namespaceName = NamespacesResponse['namespaces']['namespaceName']
+    namespaceName = NamespacesResponse['namespaces'][0]['namespaceName']
     return namespaceName
 
 def createSnapshot(session, snapshotName, namespaceName):
