@@ -5,7 +5,7 @@ from datetime import datetime
 from create_redshift_serverless import set_boto_session
 
 now = datetime.now(timezone('US/Pacific'))
-now_str = now.strftime("%Y%m%d_%H%M")
+now_str = now.strftime("%Y%m%d-%H%M")
 snapshotName = f"rssls-snapshot-{now_str}"
 MaxSnapshotNum = 3
 
