@@ -49,7 +49,7 @@ if __name__ == "__main__":
     print("#" * 20, "getNamespaceName", "#" * 20)
     namespaceName = getNamespaceName(session)
     print("#" * 20, "create_snapshot", "#" * 20)
-    createSnapshot(session)
+    createSnapshot(session, snapshotName, namespaceName)
     print("#" * 20, "delete_snapshot", "#" * 20)
     deleteObsoleteSnapshot(session)
 
