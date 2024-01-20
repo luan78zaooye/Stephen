@@ -32,7 +32,7 @@ def deleteObsoleteSnapshot(session):
     allSnapshots.sort(reverse=True, key=lambda x: x[1])
     # print(allSnapshots)
     if len(allSnapshots) <= MaxSnapshotNum:
-        print(f"Number of Snapshots does not reach limit {MaxSnapshotNum}, ", \
+        print(f"Number of Snapshots does not reach limit {MaxSnapshotNum}, ",
                    "no deleting process will occur")
     else:
         print(f"Number of Snapshots reaches limit {MaxSnapshotNum}")
