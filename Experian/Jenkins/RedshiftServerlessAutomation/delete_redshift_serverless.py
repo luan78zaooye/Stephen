@@ -13,7 +13,7 @@ def deleteWorkgroupNamespace(session):
     namespaceName = NamespacesResponse['namespaces'][0]['namespaceName']
 
     # delete workgroup
-    print(f"begin deleting redshift serverless workgroup {workgroupName}")
+    print(f"ready to delete redshift serverless workgroup {workgroupName}")
     while True:
         response = rsServerlessClient.get_workgroup(workgroupName=workgroupName)
         time.sleep(10)
@@ -27,7 +27,7 @@ def deleteWorkgroupNamespace(session):
         print(f"Failed to delete workgroup {workgroupName}")
         
     # delete namespace
-    print(f"begin deleting redshift serverless namespace {namespaceName}")
+    print(f"ready to delete redshift serverless namespace {namespaceName}")
     while True:
         response = rsServerlessClient.get_namespace(namespaceName=namespaceName)
         time.sleep(10)
