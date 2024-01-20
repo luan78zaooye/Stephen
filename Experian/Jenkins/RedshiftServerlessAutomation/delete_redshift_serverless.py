@@ -1,9 +1,7 @@
 import boto3
 import time
 import os
-
 from create_redshift_serverless import set_boto_session
-
 
 def deleteWorkgroupNamespace(session):
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
