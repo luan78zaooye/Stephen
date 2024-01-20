@@ -7,7 +7,7 @@ from create_redshift_serverless import set_boto_session
 now = datetime.now(timezone('US/Pacific'))
 now_str = now.strftime("%Y%m%d")
 snapshotName = f"rssls-snapshot-{now_str}"
-MaxSnapshotNum = 12
+MaxSnapshotNum = 3
 
 def getNamespaceName(session):
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
