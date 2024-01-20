@@ -2,11 +2,11 @@ import boto3
 import time
 from pytz import timezone
 from datetime import datetime
-from create_redshift_serverless import set_boto_session, workgroupName
+from create_redshift_serverless import set_boto_session
 
 now = datetime.now(timezone('US/Pacific'))
 now_str = now.strftime("%Y%m%d")
-snapshotName = f"{workgroupName}-snapshot-{now_str}"
+snapshotName = f"rssls-snapshot-{now_str}"
 MaxSnapshotNum = 12
 
 def getNamespaceName(session):
@@ -23,7 +23,7 @@ def createSnapshot(session, snapshotName, namespaceName):
     if response['snapshot']['status'] == "CREATING":
         print(f"Start Creating {snapshotName}")
     else:
-        raise "create failed"
+        raise Exception("create failed")
 
 def deleteObsoleteSnapshot(session):
     rsServerlessClient = session.client("redshift-serverless", region_name="us-west-2")
