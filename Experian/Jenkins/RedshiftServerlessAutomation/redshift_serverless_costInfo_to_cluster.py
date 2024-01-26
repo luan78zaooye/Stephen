@@ -1,7 +1,15 @@
 import boto3
-
+from pytz import timezone
+from datetime import datetime, timedelta
 from create_redshift_serverless import set_boto_session
 from create_redshift_serverless import workgroupName
+
+
+now = datetime.now(timezone('US/Pacific'))
+before_date = now - timedelta(days=6)
+now_str = now.strftime("%Y%m%d")
+before_str = before_date.strftime("%Y%m%d")
+
 
 # cluster_identifier = 'prod-rsraw-01'
 
@@ -9,12 +17,12 @@ from create_redshift_serverless import workgroupName
 def serverlessUnloadToS3(session,  serverlessWorkgroupName):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
 
-    unload_cost_query = "UNLOAD($$SELECT TRUNC(CONVERT_TIMEZONE('US/Pacific', start_time)) as day, \
+    unload_cost_query = f"UNLOAD($$SELECT TRUNC(CONVERT_TIMEZONE('US/Pacific', start_time)) as day, \
                                   (SUM(charged_seconds)/3600::double precision)*0.36 AS cost_incurred \
                                FROM sys_serverless_usage \
                                GROUP BY 1 \
                                ORDER BY 1 DESC$$) \
-                        TO 's3://redshift-serverless-cost-info/cost/' || TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD') \
+                        TO 's3://redshift-serverless-cost-info/cost/{before_str}_to_{now_str}' \
                         CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
                         ALLOWOVERWRITE \
                         PARALLEL OFF \
