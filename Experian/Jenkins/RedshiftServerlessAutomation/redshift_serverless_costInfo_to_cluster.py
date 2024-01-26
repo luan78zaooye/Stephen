@@ -9,16 +9,16 @@ from create_redshift_serverless import workgroupName
 def serverlessUnloadToS3(session,  serverlessWorkgroupName):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
 
-    unload_cost_query = "UNLOAD($$SELECT TRUNC(CONVERT_TIMEZONE('US/Pacific', start_time)) as day,
-                                  (SUM(charged_seconds)/3600::double precision)*0.36 AS cost_incurred\
-                               FROM sys_serverless_usage\
-                               GROUP BY 1\
-                               ORDER BY 1 DESC$$)\
-                        TO 's3://redshift-serverless-cost-info/cost/' || TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD')\
-                        CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role'\
+    unload_cost_query = "UNLOAD($$SELECT TRUNC(CONVERT_TIMEZONE('US/Pacific', start_time)) as day, \
+                                  (SUM(charged_seconds)/3600::double precision)*0.36 AS cost_incurred \
+                               FROM sys_serverless_usage \
+                               GROUP BY 1 \
+                               ORDER BY 1 DESC$$) \
+                        TO 's3://redshift-serverless-cost-info/cost/' || TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD') \
+                        CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
                         ALLOWOVERWRITE \
                         PARALLEL OFF \
-                        DELIMITER ','\
+                        DELIMITER ',' \
                         EXTENSION 'csv';"
 
 
