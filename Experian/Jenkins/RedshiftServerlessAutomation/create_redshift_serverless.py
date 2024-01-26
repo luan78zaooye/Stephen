@@ -128,8 +128,8 @@ def createNamespaceWorkgroup(session, accountId, roleName):
 
     # create workgroup
     workgroupResponse = rsServerlessClient.create_workgroup(
-        baseCapacity=48,
-        maxCapacity=48,
+        baseCapacity=8,
+        maxCapacity=8,
         enhancedVpcRouting=True,
         publiclyAccessible=False,
         # securityGroupIds=["sg-e8e38296"],
