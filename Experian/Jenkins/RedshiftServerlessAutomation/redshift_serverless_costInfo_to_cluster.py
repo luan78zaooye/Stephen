@@ -30,7 +30,7 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
                         EXTENSION 'csv';"
 
 
-
+    print(f"##########{serverlessWorkgroupName}#########")
     serverlessResponse = redshiftDataClient.execute_statement(Database="dev", WorkgroupName=serverlessWorkgroupName,
                                                               Sql=unload_cost_query)
 """
