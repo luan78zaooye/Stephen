@@ -22,7 +22,7 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
                                FROM sys_serverless_usage \
                                GROUP BY 1 \
                                ORDER BY 1 DESC$$) \
-                        TO 's3://redshift-serverless-cost-info/cost/{before_str}_to_{now_str}' \
+                        TO 's3://redshift-serverless-cost-info/cost/{before_str}_to_{now_str}_' \
                         CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
                         ALLOWOVERWRITE \
                         PARALLEL OFF \
