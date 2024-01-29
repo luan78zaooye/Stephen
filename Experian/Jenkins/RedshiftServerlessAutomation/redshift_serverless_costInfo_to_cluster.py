@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from create_redshift_serverless import set_boto_session
 from create_redshift_serverless import workgroupName
 
-workgroupName = "default-workgroup"
+
 now = datetime.now(timezone('US/Pacific'))
 before_date = now - timedelta(days=6)
 now_str = now.strftime("%Y%m%d")
