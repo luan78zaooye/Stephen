@@ -17,7 +17,7 @@ before_str = before_date.strftime("%Y%m%d")
 def serverlessUnloadToS3(session,  serverlessWorkgroupName):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
 
-    unload_cost_query = f"UNLOAD($$SELECT TRUNC(CONVERT_TIMEZONE('US/Pacific', start_time)) as day,
+    unload_cost_query = f"UNLOAD($$SELECT TRUNC(CONVERT_TIMEZONE('US/Pacific', start_time)) as day, \
                                   (SUM(charged_seconds)/3600::double precision)*0.36 AS cost_incurred \
                                FROM sys_serverless_usage \
                                GROUP BY 1 \
