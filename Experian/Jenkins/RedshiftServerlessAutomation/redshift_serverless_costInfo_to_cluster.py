@@ -54,9 +54,9 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
     
     while True:
         time.sleep(10)
-        response1 = s3Clinet.get_object(Bucket='redshift-serverless-cost-info',
+        response1 = s3Client.get_object(Bucket='redshift-serverless-cost-info',
                                        Key='cost/{before_str}_to_{now_str}_000.csv')
-        response2 = s3Clinet.get_object(Bucket='redshift-serverless-cost-info',
+        response2 = s3Client.get_object(Bucket='redshift-serverless-cost-info',
                                        Key='userCost/{before_str}_to_{now_str}_000.csv')
         if response1 != '' and response2 != '':
             print(response1)
