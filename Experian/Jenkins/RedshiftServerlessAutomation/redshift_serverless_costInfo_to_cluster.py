@@ -58,10 +58,10 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
     while True:
         time.sleep(10)
         try:
-            response1 = s3Client.get_object(Bucket='redshift-serverless-cost-info/cost',
-                                       Key='{before_str}_to_{now_str}_000.csv')
-            response2 = s3Client.get_object(Bucket='redshift-serverless-cost-info/userCost',
-                                       Key='{before_str}_to_{now_str}_000.csv')
+            response1 = s3Client.get_object(Bucket='redshift-serverless-cost-info',
+                                       Key='cost/{before_str}_to_{now_str}_000.csv')
+            response2 = s3Client.get_object(Bucket='redshift-serverless-cost-info',
+                                       Key='userCost/{before_str}_to_{now_str}_000.csv')
         except Exception as e:
             print(f"caught an exception: {str(e)}")
         if response1 != '' and response2 != '':
