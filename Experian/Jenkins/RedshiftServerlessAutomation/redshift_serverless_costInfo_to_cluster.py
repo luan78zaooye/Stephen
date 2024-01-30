@@ -53,7 +53,8 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
     
     start_time = datetime.now()
     s3Client = session.client('s3', region_name="us-west-2")
-    
+    response1 = ''
+    response2 = ''
     while True:
         time.sleep(10)
         try:
