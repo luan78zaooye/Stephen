@@ -4,9 +4,10 @@ from create_redshift_serverless import set_boto_session
 from create_redshift_serverless import workgroupName
 
 
-now = datetime.now(timezone('US/Pacific'))
-before_date = now - timedelta(days=6)
-now_str = now.strftime("%Y%m%d")
+now = datetime.now()
+now_date = now - timedelta(days=1)
+before_date = now - timedelta(days=7)
+now_str = now_date.strftime("%Y%m%d")
 before_str = before_date.strftime("%Y%m%d")
 
 
@@ -16,7 +17,7 @@ before_str = before_date.strftime("%Y%m%d")
 def serverlessUnloadToS3(session,  serverlessWorkgroupName):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
 
-    unload_cost_query = f"UNLOAD($$SELECT TRUNC(CONVERT_TIMEZONE('US/Pacific', start_time)) as day, \
+    unload_cost_query = f"UNLOAD($$SELECT TRUNC(start_time) as day, \
                                   (SUM(charged_seconds)/3600::double precision)*0.36 AS cost_incurred \
                                FROM sys_serverless_usage \
                                GROUP BY 1 \
