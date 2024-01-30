@@ -1,4 +1,5 @@
 import boto3
+import time
 from datetime import datetime, timedelta
 from create_redshift_serverless import set_boto_session
 from create_redshift_serverless import workgroupName
@@ -6,7 +7,7 @@ from create_redshift_serverless import workgroupName
 
 now = datetime.now()
 now_date = now - timedelta(days=1)
-before_date = now - timedelta(days=7)
+before_date = now - timedelta(days=8)
 now_str = now_date.strftime("%Y%m%d")
 before_str = before_date.strftime("%Y%m%d")
 
@@ -28,11 +29,26 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
                         PARALLEL OFF \
                         DELIMITER ',' \
                         EXTENSION 'csv';"
-
-
-    print(f"##########{serverlessWorkgroupName}#########")
+    
+    print('-' * 20, 'start unloading' , '-' * 20)
     serverlessResponse = redshiftDataClient.execute_statement(Database="dev", WorkgroupName=serverlessWorkgroupName,
                                                               Sql=unload_cost_query)
+    
+    start_time = datetime.now()
+    s3Client = session.client('s3', region_name="us-west-2")
+    
+    while True:
+        time.sleep(10)
+        response = s3Clinet.get_object(Bucket='redshift-serverless-cost-info',
+                                       Key='cost/{before_str}_to_{now_str}_000.csv')
+        if response != '':
+            print(response)
+            print('-' * 20, 'UNLAOD completed' , '-' * 20)
+            break
+        if datetime.now() - start_time > timedelta(seconds=60):
+            print("UNLAOD not completed or failed")
+            break
+    
 """
 # load data to physical cluster
 def S3LoadToCluster(session, cluster_identifier):
