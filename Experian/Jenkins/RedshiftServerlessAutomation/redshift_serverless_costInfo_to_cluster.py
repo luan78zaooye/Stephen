@@ -46,8 +46,10 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
                              EXTENSION 'csv';"
     
     print('-' * 20, 'start unloading' , '-' * 20)
-    serverlessResponse = redshiftDataClient.execute_statement(Database="dev", WorkgroupName=serverlessWorkgroupName,
+    redshiftDataClient.execute_statement(Database="dev", WorkgroupName=serverlessWorkgroupName,
                                                               Sql=unload_cost_query)
+    redshiftDataClient.execute_statement(Database="dev", WorkgroupName=serverlessWorkgroupName,
+                                                              Sql=unload_user_cost_query)
     
     start_time = datetime.now()
     s3Client = session.client('s3', region_name="us-west-2")
