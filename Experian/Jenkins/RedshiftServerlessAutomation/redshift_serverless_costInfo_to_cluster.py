@@ -7,7 +7,7 @@ from create_redshift_serverless import workgroupName
 
 now = datetime.now()
 now_date = now - timedelta(days=1)
-before_date = now - timedelta(days=8)
+before_date = now - timedelta(days=7)
 now_str = now_date.strftime("%Y%m%d")
 before_str = before_date.strftime("%Y%m%d")
 
@@ -20,7 +20,8 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
 
     unload_cost_query = f"UNLOAD($$SELECT TRUNC(start_time) as day, \
                                   (SUM(charged_seconds)/3600::double precision)*0.36 AS cost_incurred \
-                               FROM sys_serverless_usage \
+                               FROM sys_serverless_usage 
+                               WHERE TRUNC(start_time) != TRUNC(getdate())\
                                GROUP BY 1 \
                                ORDER BY 1 DESC$$) \
                         TO 's3://redshift-serverless-cost-info/cost/{before_str}_to_{now_str}_' \
@@ -29,6 +30,20 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
                         PARALLEL OFF \
                         DELIMITER ',' \
                         EXTENSION 'csv';"
+
+    unload_user_cost_query = f"UNLOAD($$SELECT TRUNC(start_time) AS day, \
+                                       TRIM(user_id) AS user_id, \
+                                       SUM(elapsed_time) / 60000000::DOUBLE PRECISION AS "query_time(min)" \
+                               FROM sys_query_history \
+                               WHERE TRUNC(start_time) != TRUNC(getdate()) \
+                               GROUP BY 1,2 \
+                               ORDER BY 1 DESC$$) \
+                             TO 's3://redshift-serverless-cost-info/userCost/{before_str}_to_{now_str}_' \
+                             CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
+                             ALLOWOVERWRITE \
+                             PARALLEL OFF \
+                             DELIMITER ',' \
+                             EXTENSION 'csv';"
     
     print('-' * 20, 'start unloading' , '-' * 20)
     serverlessResponse = redshiftDataClient.execute_statement(Database="dev", WorkgroupName=serverlessWorkgroupName,
@@ -39,13 +54,16 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
     
     while True:
         time.sleep(10)
-        response = s3Clinet.get_object(Bucket='redshift-serverless-cost-info',
+        response1 = s3Clinet.get_object(Bucket='redshift-serverless-cost-info',
                                        Key='cost/{before_str}_to_{now_str}_000.csv')
-        if response != '':
-            print(response)
+        response2 = s3Clinet.get_object(Bucket='redshift-serverless-cost-info',
+                                       Key='userCost/{before_str}_to_{now_str}_000.csv')
+        if response1 != '' and response2 != '':
+            print(response1)
+            print(response2)
             print('-' * 20, 'UNLAOD completed' , '-' * 20)
             break
-        if datetime.now() - start_time > timedelta(seconds=60):
+        if datetime.now() - start_time > timedelta(seconds=100):
             print("UNLAOD not completed or failed")
             break
     
