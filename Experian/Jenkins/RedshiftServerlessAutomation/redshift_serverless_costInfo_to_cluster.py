@@ -20,7 +20,7 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
 
     unload_cost_query = f"UNLOAD($$SELECT TRUNC(start_time) as day, \
                                   (SUM(charged_seconds)/3600::double precision)*0.36 AS cost_incurred \
-                               FROM sys_serverless_usage 
+                               FROM sys_serverless_usage \
                                WHERE TRUNC(start_time) != TRUNC(getdate())\
                                GROUP BY 1 \
                                ORDER BY 1 DESC$$) \
