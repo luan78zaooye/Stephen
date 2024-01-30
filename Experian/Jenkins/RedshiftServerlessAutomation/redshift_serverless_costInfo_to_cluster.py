@@ -33,7 +33,7 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
 
     unload_user_cost_query = f"UNLOAD($$SELECT TRUNC(start_time) AS day, \
                                        TRIM(user_id) AS user_id, \
-                                       SUM(elapsed_time) / 60000000::DOUBLE PRECISION AS "query_time(min)" \
+                                       SUM(elapsed_time) / 60000000::DOUBLE PRECISION AS 'query_time(min)' \
                                FROM sys_query_history \
                                WHERE TRUNC(start_time) != TRUNC(getdate()) \
                                GROUP BY 1,2 \
