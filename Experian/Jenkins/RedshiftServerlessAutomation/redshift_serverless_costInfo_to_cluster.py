@@ -1,5 +1,4 @@
 import boto3
-from pytz import timezone
 from datetime import datetime, timedelta
 from create_redshift_serverless import set_boto_session
 from create_redshift_serverless import workgroupName
