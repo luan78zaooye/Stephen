@@ -2,7 +2,7 @@ name: Redshift-Serverless-CostInfo-to-Cluster
 
 on:
   # schedule:
-  # - cron: "50 7 * * MON"  
+  # - cron: "50 23 * * SUN"  
   workflow_dispatch:
 
 
