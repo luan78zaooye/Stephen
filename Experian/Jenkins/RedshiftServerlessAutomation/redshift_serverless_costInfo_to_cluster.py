@@ -1,11 +1,10 @@
 import boto3
-from pytz import timezone
 from datetime import datetime, timedelta
 from create_redshift_serverless import set_boto_session
 from create_redshift_serverless import workgroupName
 
 
-now = datetime.now(timezone('US/Pacific'))
+now = datetime.now()
 before_date = now - timedelta(days=6)
 now_str = now.strftime("%Y%m%d")
 before_str = before_date.strftime("%Y%m%d")
