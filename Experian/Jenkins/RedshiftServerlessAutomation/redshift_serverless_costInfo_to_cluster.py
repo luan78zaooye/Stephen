@@ -11,7 +11,7 @@ before_date = now - timedelta(days=7)
 now_str = now_date.strftime("%Y%m%d")
 before_str = before_date.strftime("%Y%m%d")
 
-
+cluster_identifier = 'prod-rsraw-01'
 
 # serverless unload cost data weekly to S3
 def serverlessUnloadToS3(session,  serverlessWorkgroupName):
@@ -74,7 +74,7 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
 # load data to physical cluster
 def S3LoadToCluster(session, cluster_identifier):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
-    cluster_identifier = 'prod-rsraw-01'
+    
     database = 'dev'
     db_user = 'awsuser'
 
