@@ -113,18 +113,17 @@ def S3LoadToCluster(session, cluster_identifier):
                                                             Database=database,
                                                             DbUser=db_user,
                                                             Sql=sql_test)
+    time.sleep(5)
     clusterResponseId = queryFromCluster['Id']
     response = redshiftDataClient.get_statement_result(Id=clusterResponseId)
-    start_time = datetime.now()
-    while True:
-        time.sleep(5)
-        if response['Records'][0][0]['stringValue'] == now_str:
-            print(response['Records'])
-            print('-' * 20 + "LOAD completed" + '-' * 20)
-            break
-        if datetime.now() - start_time > timedelta(seconds=30):
-            print("LAOD failed")
-            break 
+    
+    if response['Records'][0][0]['stringValue'] == now_str:
+        print(response['Records'])
+        print('-' * 20 + "LOAD completed" + '-' * 20)
+        break
+    else:
+        print("LAOD failed")
+           
         
     
     
