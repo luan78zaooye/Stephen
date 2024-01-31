@@ -103,19 +103,21 @@ def S3LoadToCluster(session, cluster_identifier):
                                                             Database=database,
                                                             DbUser=db_user,
                                                             Sql=load_user_cost_query)
+    
+    time.sleep(10)
+    # query from xx cluster to test if new info is loaded successfully
 
-# query from xx cluster to test if new info is loaded successfully
-"""
-def testQuery(session, cluster_identifier):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
-    sql_test = "select * from xxx limit 7;"
-    queryFromCluster = redshiftDataClient.execute_statement(Database="dev", WorkgroupName=cluster_identifier,
-                                                               Sql=sql_test)
+    sql_test = "select * from dbaworking.cost order by day desc limit 2;"
+    queryFromCluster = redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
+                                                            Database=database,
+                                                            DbUser=db_user,
+                                                            Sql=sql_test)
     time.sleep(10)
     clusterResponseId = queryFromCluster['Id']
     response = redshiftDataClient.get_statement_result(Id=clusterResponseId)
     print(response)
-"""
+    
 
 if __name__ == "__main__":
     print("#" * 20, "set_boto_session", "#" * 20)
@@ -124,7 +126,5 @@ if __name__ == "__main__":
     serverlessUnloadToS3(session, workgroupName)
     print("#" * 20, "load to xx cluster", "#" * 20)
     S3LoadToCluster(session, cluster_identifier)
-    """
-    print("#" * 20, "testQuery", "#" * 20)
-    testQuery(session, cluster_identifier)
-    """
+
+
