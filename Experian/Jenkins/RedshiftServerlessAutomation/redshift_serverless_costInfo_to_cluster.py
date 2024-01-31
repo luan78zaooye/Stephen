@@ -105,18 +105,28 @@ def S3LoadToCluster(session, cluster_identifier):
                                                             Sql=load_user_cost_query)
     
     time.sleep(10)
-    # query from xx cluster to test if new info is loaded successfully
+    # query from USR cluster to test if new info is loaded successfully
 
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
-    sql_test = "select * from dbaworking.cost order by day desc limit 2;"
+    sql_test = "select * from dbaworking.cost order by day desc limit 1;"
     queryFromCluster = redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
                                                             Database=database,
                                                             DbUser=db_user,
                                                             Sql=sql_test)
-    time.sleep(10)
     clusterResponseId = queryFromCluster['Id']
     response = redshiftDataClient.get_statement_result(Id=clusterResponseId)
-    print(response['Records'])
+    start_time = datetime.now()
+    while True:
+        time.sleep(5)
+        if response['Records'][0][0]['stringValue'] == now_str:
+            print(response['Records'])
+            print('-' * 20 + "LOAD completed" + '-' * 20)
+            break
+        if datetime.now() - start_time > timedelta(seconds=30):
+            print("LAOD failed")
+            break 
+        
+    
     
 
 if __name__ == "__main__":
@@ -124,7 +134,7 @@ if __name__ == "__main__":
     session = set_boto_session("251338191197", "redshift_serverless_automation")
     print("#" * 20, "unload data to S3", "#" * 20)
     serverlessUnloadToS3(session, workgroupName)
-    print("#" * 20, "load to xx cluster", "#" * 20)
+    print("#" * 20, "load to USR cluster", "#" * 20)
     S3LoadToCluster(session, cluster_identifier)
 
 
