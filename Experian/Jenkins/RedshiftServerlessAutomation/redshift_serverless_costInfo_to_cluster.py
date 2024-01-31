@@ -11,7 +11,7 @@ before_date = now - timedelta(days=7)
 now_str = now_date.strftime("%Y%m%d")
 before_str = before_date.strftime("%Y%m%d")
 
-cluster_identifier = 'prod-rsraw-01'
+
 
 # serverless unload cost data weekly to S3
 def serverlessUnloadToS3(session,  serverlessWorkgroupName):
@@ -74,6 +74,7 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
 # load data to physical cluster
 def S3LoadToCluster(session, cluster_identifier):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
+    cluster_identifier = 'prod-rsraw-01'
     database = 'dev'
     db_user = 'awsuser'
 
@@ -82,15 +83,15 @@ def S3LoadToCluster(session, cluster_identifier):
     load_cost_query += "COPY dbaworking.cost \
                         FROM 's3://redshift-serverless-cost-info/cost/' \
                         CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
-                        TIMEFORMAT 'auto' EMPTYASNULL BLANKASNULL MAXERROR 0 COMPUPDATE OFF STATUPDATE OFF \
-                        DELIMITER ',' TRUNCATECOLUMNS TRIMBLANKS IGNOREBLACKLINES IGNOREHEADER 1 CSV;"
+                        TIMEFORMAT 'auto' EMPTYASNULL MAXERROR 0 COMPUPDATE OFF STATUPDATE OFF \
+                        DELIMITER ',' TRUNCATECOLUMNS TRIMBLANKS CSV;"
 
     load_user_cost_query = "TRUNCATE dbaworking.user_cost;"
     load_user_cost_query += "COPY dbaworking.user_cost \
                              FROM 's3://redshift-serverless-cost-info/userCost/' \
                              CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
-                             TIMEFORMAT 'auto' EMPTYASNULL BLANKASNULL MAXERROR 0 COMPUPDATE OFF STATUPDATE OFF \
-                             DELIMITER ',' TRUNCATECOLUMNS TRIMBLANKS IGNOREBLACKLINES IGNOREHEADER 1 CSV;"
+                             TIMEFORMAT 'auto' EMPTYASNULL MAXERROR 0 COMPUPDATE OFF STATUPDATE OFF \
+                             DELIMITER ',' TRUNCATECOLUMNS TRIMBLANKS CSV;"
     
 
     redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
