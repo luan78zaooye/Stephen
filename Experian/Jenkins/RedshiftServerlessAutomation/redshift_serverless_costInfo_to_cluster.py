@@ -65,15 +65,12 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
         except Exception as e:
             print(f"caught an exception: {str(e)}")
         if response1 != '' and response2 != '':
-            print(response1)
-            print(response2)
             print('-' * 20, 'UNLAOD completed' , '-' * 20)
             break
         if datetime.now() - start_time > timedelta(seconds=100):
             print("UNLAOD not completed or failed")
             break
     
-"""
 # load data to physical cluster
 def S3LoadToCluster(session, cluster_identifier):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
@@ -81,16 +78,34 @@ def S3LoadToCluster(session, cluster_identifier):
     db_user = 'awsuser'
 
     # sql scripts for producer
-    load_query = " ;"
+    load_cost_query = TRUNCATE dbaworking.cost;
+    load_cost_query += COPY dbaworking.cost \
+                       FROM 's3://redshift-serverless-cost-info/cost/' \
+                       CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
+                       TIMEFORMAT 'auto' EMPTYASNULL BLANKASNULL MAXERROR 0 COMPUPDATE OFF STATUPDATE OFF \
+                       DELIMITER ',' TRUNCATECOLUMNS TRIMBLANKS IGNOREBLACKLINES IGNOREHEADER 1 CSV;
 
-    physicalResponse = redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
+    load_user_cost_query = TRUNCATE dbaworking.user_cost;
+    load_user_cost_query += COPY dbaworking.user_cost \
+                            FROM 's3://redshift-serverless-cost-info/cost/' \
+                            CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
+                            TIMEFORMAT 'auto' EMPTYASNULL BLANKASNULL MAXERROR 0 COMPUPDATE OFF STATUPDATE OFF \
+                            DELIMITER ',' TRUNCATECOLUMNS TRIMBLANKS IGNOREBLACKLINES IGNOREHEADER 1 CSV;
+    
+
+    redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
                                                             Database=database,
                                                             DbUser=db_user,
-                                                            Sql=load_query)
+                                                            Sql=load_cost_query)
+    
+    redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
+                                                            Database=database,
+                                                            DbUser=db_user,
+                                                            Sql=load_user_cost_query)
 
 
 # query from xx cluster to test if new info is loaded successfully
-
+"""
 def testQuery(session, cluster_identifier):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
     sql_test = "select * from xxx limit 7;"
@@ -107,9 +122,9 @@ if __name__ == "__main__":
     session = set_boto_session("251338191197", "redshift_serverless_automation")
     print("#" * 20, "unload data to S3", "#" * 20)
     serverlessUnloadToS3(session, workgroupName)
-    """
     print("#" * 20, "load to xx cluster", "#" * 20)
     S3LoadToCluster(session, cluster_identifier)
+    """
     print("#" * 20, "testQuery", "#" * 20)
     testQuery(session, cluster_identifier)
     """
