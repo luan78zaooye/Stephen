@@ -11,8 +11,7 @@ before_date = now - timedelta(days=7)
 now_str = now_date.strftime("%Y%m%d")
 before_str = before_date.strftime("%Y%m%d")
 
-
-# cluster_identifier = 'prod-rsraw-01'
+cluster_identifier = 'prod-rsraw-01'
 
 # serverless unload cost data weekly to S3
 def serverlessUnloadToS3(session,  serverlessWorkgroupName):
@@ -71,7 +70,7 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
             print("UNLAOD failed")
             break
 
-"""
+
 # load data to physical cluster
 def S3LoadToCluster(session, cluster_identifier):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
@@ -81,14 +80,14 @@ def S3LoadToCluster(session, cluster_identifier):
     # sql scripts for producer
     load_cost_query = TRUNCATE dbaworking.cost;
     load_cost_query += COPY dbaworking.cost \
-                       FROM 's3://redshift-serverless-cost-info/userCost/' \
+                       FROM 's3://redshift-serverless-cost-info/cost/' \
                        CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
                        TIMEFORMAT 'auto' EMPTYASNULL BLANKASNULL MAXERROR 0 COMPUPDATE OFF STATUPDATE OFF \
                        DELIMITER ',' TRUNCATECOLUMNS TRIMBLANKS IGNOREBLACKLINES IGNOREHEADER 1 CSV;
 
     load_user_cost_query = TRUNCATE dbaworking.user_cost;
     load_user_cost_query += COPY dbaworking.user_cost \
-                            FROM 's3://redshift-serverless-cost-info/cost/' \
+                            FROM 's3://redshift-serverless-cost-info/userCost/' \
                             CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
                             TIMEFORMAT 'auto' EMPTYASNULL BLANKASNULL MAXERROR 0 COMPUPDATE OFF STATUPDATE OFF \
                             DELIMITER ',' TRUNCATECOLUMNS TRIMBLANKS IGNOREBLACKLINES IGNOREHEADER 1 CSV;
@@ -103,7 +102,6 @@ def S3LoadToCluster(session, cluster_identifier):
                                                             Database=database,
                                                             DbUser=db_user,
                                                             Sql=load_user_cost_query)
-"""
 
 # query from xx cluster to test if new info is loaded successfully
 """
@@ -123,10 +121,9 @@ if __name__ == "__main__":
     session = set_boto_session("251338191197", "redshift_serverless_automation")
     print("#" * 20, "unload data to S3", "#" * 20)
     serverlessUnloadToS3(session, workgroupName)
-    """
     print("#" * 20, "load to xx cluster", "#" * 20)
     S3LoadToCluster(session, cluster_identifier)
-    
+    """
     print("#" * 20, "testQuery", "#" * 20)
     testQuery(session, cluster_identifier)
     """
