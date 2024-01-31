@@ -70,7 +70,8 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
         if datetime.now() - start_time > timedelta(seconds=100):
             print("UNLAOD not completed or failed")
             break
-    
+
+"""
 # load data to physical cluster
 def S3LoadToCluster(session, cluster_identifier):
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
@@ -80,7 +81,7 @@ def S3LoadToCluster(session, cluster_identifier):
     # sql scripts for producer
     load_cost_query = TRUNCATE dbaworking.cost;
     load_cost_query += COPY dbaworking.cost \
-                       FROM 's3://redshift-serverless-cost-info/cost/' \
+                       FROM 's3://redshift-serverless-cost-info/userCost/' \
                        CREDENTIALS 'aws_iam_role=arn:aws:iam::251338191197:role/redshift_role' \
                        TIMEFORMAT 'auto' EMPTYASNULL BLANKASNULL MAXERROR 0 COMPUPDATE OFF STATUPDATE OFF \
                        DELIMITER ',' TRUNCATECOLUMNS TRIMBLANKS IGNOREBLACKLINES IGNOREHEADER 1 CSV;
@@ -102,7 +103,7 @@ def S3LoadToCluster(session, cluster_identifier):
                                                             Database=database,
                                                             DbUser=db_user,
                                                             Sql=load_user_cost_query)
-
+"""
 
 # query from xx cluster to test if new info is loaded successfully
 """
