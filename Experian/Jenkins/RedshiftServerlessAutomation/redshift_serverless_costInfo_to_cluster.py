@@ -120,7 +120,6 @@ def S3LoadToCluster(session, cluster_identifier):
     if response['Records'][0][0]['stringValue'] == now_str:
         print(response['Records'])
         print('-' * 20 + "LOAD completed" + '-' * 20)
-        break
     else:
         print("LAOD failed")
            
