@@ -104,7 +104,7 @@ def S3LoadToCluster(session, cluster_identifier):
                                                             DbUser=db_user,
                                                             Sql=load_user_cost_query)
     
-    time.sleep(50)
+    time.sleep(10)
     # query from USR cluster to test if new info is loaded successfully
 
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
@@ -113,10 +113,11 @@ def S3LoadToCluster(session, cluster_identifier):
                                                             Database=database,
                                                             DbUser=db_user,
                                                             Sql=sql_test)
-    time.sleep(20)
+    time.sleep(5)
     clusterResponseId = queryFromCluster['Id']
     response = redshiftDataClient.get_statement_result(Id=clusterResponseId)
-    
+
+    print(response['Records'][0][0]['stringValue'])
     if response['Records'][0][0]['stringValue'] == now_str:
         print(response['Records'])
         print('-' * 20 + "LOAD completed" + '-' * 20)
