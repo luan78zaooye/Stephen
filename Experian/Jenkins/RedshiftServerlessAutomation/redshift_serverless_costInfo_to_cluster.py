@@ -123,9 +123,10 @@ if __name__ == "__main__":
     session = set_boto_session("251338191197", "redshift_serverless_automation")
     print("#" * 20, "unload data to S3", "#" * 20)
     serverlessUnloadToS3(session, workgroupName)
+    """
     print("#" * 20, "load to xx cluster", "#" * 20)
     S3LoadToCluster(session, cluster_identifier)
-    """
+    
     print("#" * 20, "testQuery", "#" * 20)
     testQuery(session, cluster_identifier)
     """
