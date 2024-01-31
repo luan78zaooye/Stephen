@@ -9,6 +9,7 @@ now = datetime.now()
 now_date = now - timedelta(days=1)
 before_date = now - timedelta(days=7)
 now_str = now_date.strftime("%Y%m%d")
+now_str_hyphen = now_date.strftime("%Y-%m-%d")
 before_str = before_date.strftime("%Y%m%d")
 
 cluster_identifier = 'prod-rsraw-01'
@@ -117,8 +118,7 @@ def S3LoadToCluster(session, cluster_identifier):
     clusterResponseId = queryFromCluster['Id']
     response = redshiftDataClient.get_statement_result(Id=clusterResponseId)
 
-    print(response['Records'][0][0]['stringValue'])
-    if response['Records'][0][0]['stringValue'] == now_str:
+    if response['Records'][0][0]['stringValue'] == now_str_hyphen:
         print(response['Records'])
         print('-' * 20 + "LOAD completed" + '-' * 20)
     else:
