@@ -116,7 +116,7 @@ def S3LoadToCluster(session, cluster_identifier):
     time.sleep(10)
     clusterResponseId = queryFromCluster['Id']
     response = redshiftDataClient.get_statement_result(Id=clusterResponseId)
-    print(response['records'])
+    print(response['Records'])
     
 
 if __name__ == "__main__":
