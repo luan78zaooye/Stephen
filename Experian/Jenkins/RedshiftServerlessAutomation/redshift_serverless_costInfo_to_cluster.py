@@ -109,17 +109,27 @@ def S3LoadToCluster(session, cluster_identifier):
     # query from USR cluster to test if new info is loaded successfully
 
     redshiftDataClient = session.client("redshift-data", region_name="us-west-2")
-    sql_test = "select * from dbaworking.cost order by day desc limit 1;"
-    queryFromCluster = redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
+    sql_test1 = "select * from dbaworking.cost order by day desc limit 1;"
+    sql_test2 = "select * from dbaworking.user_cost order by day desc limit 1;"
+    queryFromCluster1 = redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
                                                             Database=database,
                                                             DbUser=db_user,
-                                                            Sql=sql_test)
-    time.sleep(5)
-    clusterResponseId = queryFromCluster['Id']
-    response = redshiftDataClient.get_statement_result(Id=clusterResponseId)
+                                                            Sql=sql_test1)
 
-    if response['Records'][0][0]['stringValue'] == now_str_hyphen:
-        print(response['Records'])
+    queryFromCluster2 = redshiftDataClient.execute_statement(ClusterIdentifier=cluster_identifier,
+                                                            Database=database,
+                                                            DbUser=db_user,
+                                                            Sql=sql_test2)
+    time.sleep(5)
+    clusterResponseId1 = queryFromCluster1['Id']
+    response1 = redshiftDataClient.get_statement_result(Id=clusterResponseId1)
+    clusterResponseId2 = queryFromCluster2['Id']
+    response2 = redshiftDataClient.get_statement_result(Id=clusterResponseId2)
+
+    if response1['Records'][0][0]['stringValue'] == now_str_hyphen and 
+              response2['Records'][0][0]['stringValue'] == now_str_hyphen:
+        print(response1['Records'])
+        print(response2['Records'])          
         print('-' * 20 + "LOAD completed" + '-' * 20)
     else:
         print("LAOD failed")
