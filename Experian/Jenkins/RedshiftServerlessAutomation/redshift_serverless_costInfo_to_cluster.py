@@ -126,7 +126,7 @@ def S3LoadToCluster(session, cluster_identifier):
     clusterResponseId2 = queryFromCluster2['Id']
     response2 = redshiftDataClient.get_statement_result(Id=clusterResponseId2)
 
-    if response1['Records'][0][0]['stringValue'] == now_str_hyphen and 
+    if response1['Records'][0][0]['stringValue'] == now_str_hyphen and \
               response2['Records'][0][0]['stringValue'] == now_str_hyphen:
         print(response1['Records'])
         print(response2['Records'])          
