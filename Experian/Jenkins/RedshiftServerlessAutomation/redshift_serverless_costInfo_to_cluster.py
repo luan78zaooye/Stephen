@@ -120,7 +120,7 @@ def S3LoadToCluster(session, cluster_identifier):
                                                             Database=database,
                                                             DbUser=db_user,
                                                             Sql=sql_test2)
-    time.sleep(5)
+    time.sleep(10)
     clusterResponseId1 = queryFromCluster1['Id']
     response1 = redshiftDataClient.get_statement_result(Id=clusterResponseId1)
     clusterResponseId2 = queryFromCluster2['Id']
