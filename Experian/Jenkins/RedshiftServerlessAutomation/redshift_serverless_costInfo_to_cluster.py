@@ -63,12 +63,12 @@ def serverlessUnloadToS3(session,  serverlessWorkgroupName):
             response2 = s3Client.get_object(Bucket='redshift-serverless-cost-info',
                                        Key=f'userCost/{before_str}_to_{now_str}_000.csv')
         except Exception as e:
-            print(f"UNLAOD not completed yet: {e}")
+            print(f"UNLOAD not completed yet: {e}")
         if response1 != '' and response2 != '':
-            print('-' * 20, 'UNLAOD completed' , '-' * 20)
+            print('-' * 20, 'UNLOAD completed' , '-' * 20)
             break
         if datetime.now() - start_time > timedelta(seconds=100):
-            print("UNLAOD failed")
+            print("UNLOAD failed")
             break
 
 
