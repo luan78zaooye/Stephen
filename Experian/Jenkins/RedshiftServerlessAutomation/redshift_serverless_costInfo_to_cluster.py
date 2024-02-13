@@ -4,11 +4,6 @@ from datetime import datetime, timedelta
 from create_redshift_serverless import set_boto_session
 from create_redshift_serverless import workgroupName
 
-<<<<<<< Updated upstream
-=======
-
-
->>>>>>> Stashed changes
 now = datetime.now()
 now_date = now - timedelta(days=1)
 before_date = now - timedelta(days=7)
